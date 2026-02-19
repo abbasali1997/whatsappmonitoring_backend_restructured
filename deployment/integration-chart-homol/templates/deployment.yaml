@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "integration-chart-homol.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ include "integration-chart-homol.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "integration-chart-homol.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "integration-chart-homol.name" . }}
+    spec:
+      {{- if .Values.enableKeyVault }}
+      serviceAccountName: {{ include "integration-chart-homol.fullname" . }}-sa
+      {{- end }}
+      containers:
+        - name: integration-chart-homol
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+          {{- if .Values.enableKeyVault }}
+          resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: secrets-store-inline
+              mountPath: "/mnt/secrets-store"
+              readOnly: true
+          {{- end }}
+          {{- if and .Values.enableKeyVault .Values.useSecret }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.secretRef }}
+          {{- end }}
+          env:
+            {{- if .Values.env }}
+            {{- range .Values.env }}
+            - name: {{ .name }}
+              value: {{ .value | quote }}
+            {{- end }}
+          {{- end }}
+      {{- if .Values.enableKeyVault }}
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: {{ .Values.secretRef }}
+      {{- end }}

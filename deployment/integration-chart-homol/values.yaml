@@ -1,0 +1,41 @@
+image:
+  repository: unicxhomolacr1.azurecr.io/unicx-integration-homol
+  tag: latest
+  pullPolicy: Always
+
+resources:
+ requests:
+   cpu: "400m"
+   memory: "768Mi"
+ limits:
+   cpu: "2000m"
+   memory: "1536Mi"
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 5000
+
+secretRef: unicx-secrets-homol
+
+# Use secrets from Kubernetes secret (synced from Key Vault)
+useSecret: true
+
+# If true, Key Vault secrets declared in SecretProviderClass get synced into a Kubernetes Secret
+# and the Deployment will add the secret via `envFrom:` to the container. Set this to false if
+# you want to access secrets only via files or .Values.env.
+# secretRef: name of the Kubernetes Secret created by the CSI driver
+
+# Azure Key Vault Configuration
+enableKeyVault: true
+keyVaultName: unicxhomol-keyvault
+
+aksManagedIdentityClientID:  8b5d0f42-1fc8-41b2-8d00-592406e68109
+
+tenantId: 622ab7c8-5064-49fc-a48c-b1693c03c5db
+
+# Static environment variables (used if not in Key Vault or as overrides)
+# Note: Most secrets should come from Azure Key Vault via secretObjects
+env: []
+
+replicaCount: 2

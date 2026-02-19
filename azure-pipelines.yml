@@ -1,0 +1,67 @@
+trigger:
+  branches:
+    include:
+      - main
+
+variables:
+  acrName: 'unicxprod'
+  acrLoginServer: 'unicxprod.azurecr.io'
+  imageName: 'backend'
+  kubernetesNamespace: 'default'
+  tag: '$(Build.BuildId)'
+
+stages:
+- stage: Build
+  displayName: 'Build and Push Docker Image'
+  jobs:
+  - job: BuildJob
+    displayName: 'Build Docker Image'
+    pool:
+      name: self-hosted
+    steps:
+    - task: Docker@2
+      displayName: 'Build and Push to ACR'
+      inputs:
+        containerRegistry: 'unicx-acr-prod'
+        repository: '$(imageName)'
+        command: 'buildAndPush'
+        Dockerfile: 'Dockerfile'
+        tags: |
+          $(tag)
+          latest
+
+- stage: Deploy
+  displayName: 'Deploy to AKS'
+  dependsOn: Build
+  jobs:
+  - deployment: DeployJob
+    displayName: 'Deploy to Kubernetes'
+    pool:
+      name: self-hosted
+    environment: 'production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self
+          
+          - task: KubernetesManifest@1
+            displayName: 'Deploy Key Vault SecretProviderClass'
+            inputs:
+              action: 'deploy'
+              connectionType: 'kubernetesServiceConnection'
+              kubernetesServiceConnection: 'unicx-aks-prod'
+              namespace: '$(kubernetesNamespace)'
+              manifests: 'k8s/secretproviderclass.yaml'
+          
+          - task: KubernetesManifest@1
+            displayName: 'Deploy to AKS'
+            inputs:
+              action: 'deploy'
+              connectionType: 'kubernetesServiceConnection'
+              kubernetesServiceConnection: 'unicx-aks-prod'
+              namespace: '$(kubernetesNamespace)'
+              manifests: |
+                k8s/deployment.yaml
+                k8s/service.yaml
+              containers: '$(acrLoginServer)/$(imageName):$(tag)'

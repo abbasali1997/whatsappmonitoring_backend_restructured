@@ -1,0 +1,41 @@
+image:
+  repository: unicxprodacr.azurecr.io/unicx-integration-prod
+  tag: latest
+  pullPolicy: Always
+
+resources:
+ requests:
+   cpu: "100m"
+   memory: "500Mi"
+ limits:
+   cpu: "600m"
+   memory: "2Gi"
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 5000
+
+secretRef: unicx-secrets-prod
+
+# Use secrets from Kubernetes secret (synced from Key Vault)
+useSecret: true
+
+# If true, Key Vault secrets declared in SecretProviderClass get synced into a Kubernetes Secret
+# and the Deployment will add the secret via `envFrom:` to the container. Set this to false if
+# you want to access secrets only via files or .Values.env.
+# secretRef: name of the Kubernetes Secret created by the CSI driver
+
+# Azure Key Vault Configuration
+enableKeyVault: true
+keyVaultName: unicxprod-keyvault1
+
+aksManagedIdentityClientID:  5109354c-7495-43c6-a824-8994ead3fc53
+
+tenantId: 411412b8-3a99-4c00-b972-acf45ebfc76e
+
+# Static environment variables (used if not in Key Vault or as overrides)
+# Note: Most secrets should come from Azure Key Vault via secretObjects
+env: []
+
+replicaCount: 2

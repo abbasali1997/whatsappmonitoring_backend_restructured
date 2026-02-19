@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{subject}} - {{companyName}}</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #222222;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .email-wrapper {
+            width: 100%;
+            background-color: #f5f5f5;
+            padding: 40px 0;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+        }
+        .header {
+            padding: 30px 40px;
+            border-bottom: 3px solid #dc2626;
+            background-color: #ffffff;
+        }
+        .logo {
+            max-width: 150px;
+            height: auto;
+            display: block;
+        }
+        .content {
+            padding: 40px;
+        }
+        .alert-badge {
+            display: inline-block;
+            background-color: #fee2e2;
+            color: #991b1b;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+        }
+        .greeting {
+            font-size: 18px;
+            font-weight: 400;
+            color: #222222;
+            margin: 0 0 20px 0;
+        }
+        .message {
+            font-size: 15px;
+            color: #555555;
+            line-height: 1.7;
+            margin: 0 0 30px 0;
+        }
+        .alert-box {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            border-left: 4px solid #dc2626;
+            border-radius: 4px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        .alert-box-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #991b1b;
+            margin: 0 0 15px 0;
+        }
+        .alert-box-content {
+            font-size: 14px;
+            color: #555555;
+            line-height: 1.6;
+            margin: 0;
+        }
+        .info-box {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-left: 3px solid #6b7280;
+            border-radius: 4px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        .info-box-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #222222;
+            margin: 0 0 15px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .info-row {
+            display: flex;
+            padding: 10px 0;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #374151;
+            min-width: 180px;
+            flex-shrink: 0;
+        }
+        .info-value {
+            color: #555555;
+            word-break: break-word;
+        }
+        .button-container {
+            text-align: center;
+            margin: 35px 0;
+        }
+        .button {
+            display: inline-block;
+            background-color: #14a800;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 32px;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+        .button:hover {
+            background-color: #0d7d00;
+        }
+        .action-box {
+            background-color: #f0f9ff;
+            border-left: 3px solid #14a800;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        .action-box-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #222222;
+            margin: 0 0 10px 0;
+        }
+        .action-list {
+            font-size: 14px;
+            color: #555555;
+            line-height: 1.8;
+            margin: 0;
+            padding-left: 20px;
+        }
+        .action-list li {
+            margin-bottom: 8px;
+        }
+        .divider {
+            height: 1px;
+            background-color: #e0e0e0;
+            margin: 30px 0;
+        }
+        .footer {
+            padding: 30px 40px;
+            background-color: #f9f9f9;
+            border-top: 1px solid #e0e0e0;
+        }
+        .footer-text {
+            font-size: 13px;
+            color: #666666;
+            line-height: 1.6;
+            margin: 0 0 15px 0;
+        }
+        .footer-links {
+            margin: 20px 0;
+        }
+        .footer-links a {
+            color: #14a800;
+            text-decoration: none;
+            font-size: 13px;
+            margin-right: 20px;
+        }
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        .footer-company {
+            font-size: 12px;
+            color: #999999;
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        @media only screen and (max-width: 600px) {
+            .email-container {
+                width: 100% !important;
+            }
+            .header, .content, .footer {
+                padding: 25px !important;
+            }
+            .info-row {
+                flex-direction: column;
+            }
+            .info-label {
+                min-width: auto;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-wrapper">
+        <div class="email-container">
+            <!-- Header -->
+            <div class="header">
+                {{#if logoUrl}}
+                <img src="{{logoUrl}}" alt="{{companyName}}" class="logo">
+                {{else}}
+                <div style="font-size: 24px; font-weight: 600; color: #dc2626;">{{companyName}}</div>
+                {{/if}}
+            </div>
+
+            <!-- Content -->
+            <div class="content">
+                <div class="alert-badge">⚠️ {{alertBadge}}</div>
+                
+                <p class="greeting">{{greeting}},</p>
+                
+                <p class="message">
+                    {{intro}}
+                </p>
+
+                <!-- Alert Box -->
+                <div class="alert-box">
+                    <div class="alert-box-title">{{alertTitle}}</div>
+                    <p class="alert-box-content">
+                        {{alertMessage}}
+                    </p>
+                </div>
+
+                <!-- Session Details -->
+                <div class="info-box">
+                    <div class="info-box-title">{{detailsTitle}}</div>
+                    
+                    <div class="info-row">
+                        <div class="info-label">{{sessionLabel}}</div>
+                        <div class="info-value">{{sessionId}}</div>
+                    </div>
+                    
+                    {{#if phoneNumber}}
+                    <div class="info-row">
+                        <div class="info-label">{{phoneLabel}}</div>
+                        <div class="info-value">{{phoneNumber}}</div>
+                    </div>
+                    {{/if}}
+                    
+                    {{#if whatsappName}}
+                    <div class="info-row">
+                        <div class="info-label">{{nameLabel}}</div>
+                        <div class="info-value">{{whatsappName}}</div>
+                    </div>
+                    {{/if}}
+                    
+                    {{#if lastHealthStatus}}
+                    <div class="info-row">
+                        <div class="info-label">{{statusLabel}}</div>
+                        <div class="info-value">
+                            <span style="color: #dc2626; font-weight: 600;">{{lastHealthStatus}}</span>
+                        </div>
+                    </div>
+                    {{/if}}
+                    
+                    {{#if consecutiveFailures}}
+                    <div class="info-row">
+                        <div class="info-label">{{failuresLabel}}</div>
+                        <div class="info-value">
+                            <span style="color: #dc2626; font-weight: 600;">{{consecutiveFailures}}</span>
+                        </div>
+                    </div>
+                    {{/if}}
+                    
+                    {{#if reason}}
+                    <div class="info-row">
+                        <div class="info-label">{{reasonLabel}}</div>
+                        <div class="info-value">{{reason}}</div>
+                    </div>
+                    {{/if}}
+                </div>
+
+                <!-- Recommended Actions -->
+                <div class="action-box">
+                    <div class="action-box-title">{{actionTitle}}</div>
+                    <ul class="action-list">
+                        <li>{{action1}}</li>
+                        <li>{{action2}}</li>
+                        <li>{{action3}}</li>
+                    </ul>
+                </div>
+
+                <!-- Call to Action -->
+                <div class="button-container">
+                    <a href="{{loginUrl}}" class="button">{{buttonLabel}}</a>
+                </div>
+
+                <div class="divider"></div>
+
+                <p class="message" style="margin-bottom: 0;">
+                    {{supportText}}
+                </p>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

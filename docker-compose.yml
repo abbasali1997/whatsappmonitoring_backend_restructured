@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  # Backend Application
+  app:
+    build: .
+    container_name: unicx-integration
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    environment:
+      - MONGODB_URI=${MONGODB_URI}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASS=${EMAIL_PASS}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - AZURE_SERVICE_BUS_CONNECTION_STRING=${AZURE_SERVICE_BUS_CONNECTION_STRING}
+      - AZURE_STORAGE_CONNECTION_STRING=${AZURE_STORAGE_CONNECTION_STRING}
+    restart: unless-stopped
