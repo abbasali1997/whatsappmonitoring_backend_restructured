@@ -17,7 +17,10 @@ import { WhatsAppService } from "./whatsapp.service";
 import { EmailService } from "../email/email.service";
 import { InjectModel } from "@nestjs/mongoose";
 import { User, UserDocument } from "../../common/schemas/user.schema";
-import { recordWhatsAppAlertEvent, recordWhatsAppHealthCheck } from "../../telemetry";
+import {
+  recordWhatsAppAlertEvent,
+  recordWhatsAppHealthCheck,
+} from "../../telemetry";
 
 @Injectable()
 export class WhatsAppHealthService implements OnModuleInit, OnModuleDestroy {
@@ -26,7 +29,6 @@ export class WhatsAppHealthService implements OnModuleInit, OnModuleDestroy {
   private readonly failureThreshold: number;
   private readonly alertCooldownMs: number;
   private readonly enabled: boolean;
-  private running = false;
 
   constructor(
     @InjectModel(WhatsAppSession.name)
@@ -43,10 +45,12 @@ export class WhatsAppHealthService implements OnModuleInit, OnModuleDestroy {
         process.env.WHATSAPP_HEALTHCHECK_ENABLED !== "false",
       ) ?? true;
     this.intervalMs =
-      Number(this.configService.get<string>(
-        "whatsapp.healthCheckIntervalMs",
-        process.env.WHATSAPP_HEALTHCHECK_INTERVAL_MS || "300000",
-      )) || 300000; // default 5 minutes
+      Number(
+        this.configService.get<string>(
+          "whatsapp.healthCheckIntervalMs",
+          process.env.WHATSAPP_HEALTHCHECK_INTERVAL_MS || "300000",
+        ),
+      ) || 300000; // default 5 minutes
     this.failureThreshold =
       Number(
         this.configService.get<string>(
@@ -65,35 +69,7 @@ export class WhatsAppHealthService implements OnModuleInit, OnModuleDestroy {
       ) || 3600000; // default: 1 hour
   }
 
-  onModuleInit() {
-    if (!this.enabled) {
-      this.logger.log("[HealthCheckTick] Scheduler disabled by configuration");
-      return;
-    }
-    if (!Number.isFinite(this.intervalMs) || this.intervalMs <= 0) {
-      this.logger.warn(
-        `[HealthCheckTick] Scheduler not started due to invalid intervalMs=${this.intervalMs}`,
-      );
-      return;
-    }
-    // Use dynamic interval so WHATSAPP_HEALTHCHECK_INTERVAL_MS actually applies.
-    const name = "whatsapp-health-check";
-    try {
-      // In case of hot reload, ensure we don't double-register.
-      this.schedulerRegistry.deleteInterval(name);
-    } catch {
-      // ignore
-    }
-
-    const interval = setInterval(() => {
-      void this.runHealthChecks();
-    }, this.intervalMs);
-
-    this.schedulerRegistry.addInterval(name, interval);
-    this.logger.log(
-      `[HealthCheckTick] Scheduler started: intervalMs=${this.intervalMs}, failureThreshold=${this.failureThreshold}`,
-    );
-  }
+  onModuleInit() {}
 
   onModuleDestroy() {
     if (!this.enabled) return;
@@ -104,70 +80,6 @@ export class WhatsAppHealthService implements OnModuleInit, OnModuleDestroy {
     } catch {
       // ignore
     }
-  }
-
-  async runHealthChecks(): Promise<void> {
-    if (this.running) {
-      this.logger.warn(
-        "[HealthCheckTick] Previous run still in progress; skipping this tick",
-      );
-      return;
-    }
-
-    this.running = true;
-    const startedAt = Date.now();
-    const activeClientSessionIds = this.whatsappService.listActiveClientSessionIds?.() || [];
-    const sessionOr: any[] = [
-      {
-        status: {
-          $in: [
-            SessionStatus.READY,
-            SessionStatus.AUTHENTICATED,
-            SessionStatus.FAILED,
-            SessionStatus.CONNECTING,
-          ],
-        },
-      },
-      // Previously connected sessions that got marked DISCONNECTED (e.g. during restarts)
-      // should still be health-checked so we can trigger reconnect/alerts.
-      {
-        status: SessionStatus.DISCONNECTED,
-        connectedAt: { $exists: true, $ne: null },
-      },
-    ];
-    if (activeClientSessionIds.length) {
-      // If a client exists in-memory, include it even if DB flags are stale.
-      sessionOr.push({ sessionId: { $in: activeClientSessionIds } });
-    }
-
-    const sessions = await this.sessionModel
-      .find({ $or: sessionOr })
-      .select(
-        "_id sessionId tenantId phoneNumber whatsappName status connectedAt lastHealthStatus consecutiveHealthFailures lastHealthAlertAt",
-      )
-      .lean();
-
-    if (!sessions.length) {
-      this.logger.debug(
-        `[HealthCheckTick] No eligible sessions found (activeClients=${activeClientSessionIds.length})`,
-      );
-      this.running = false;
-      return;
-    }
-
-    this.logger.log(
-      `[HealthCheckTick] Running health checks: sessions=${sessions.length}`,
-    );
-
-    for (const session of sessions) {
-      await this.checkSession(session, { isPeriodic: true });
-    }
-
-    const durationMs = Date.now() - startedAt;
-    this.logger.log(
-      `[HealthCheckTick] Completed health checks: sessions=${sessions.length}, durationMs=${durationMs}`,
-    );
-    this.running = false;
   }
 
   /**
@@ -189,9 +101,15 @@ export class WhatsAppHealthService implements OnModuleInit, OnModuleDestroy {
     // Match periodic scheduler eligibility so manual checks behave the same.
     const st = (session as any).status;
     const eligibleByStatus =
-      [SessionStatus.READY, SessionStatus.AUTHENTICATED, SessionStatus.FAILED, SessionStatus.CONNECTING].includes(st) ||
+      [
+        SessionStatus.READY,
+        SessionStatus.AUTHENTICATED,
+        SessionStatus.FAILED,
+        SessionStatus.CONNECTING,
+      ].includes(st) ||
       (st === SessionStatus.DISCONNECTED && !!(session as any).connectedAt);
-    const eligible = eligibleByStatus || this.whatsappService.hasActiveClient(sessionId);
+    const eligible =
+      eligibleByStatus || this.whatsappService.hasActiveClient(sessionId);
 
     if (eligible) {
       // IMPORTANT: manual/dedicated checks must NOT update nextHealthCheckAt
@@ -202,16 +120,16 @@ export class WhatsAppHealthService implements OnModuleInit, OnModuleDestroy {
     return this.whatsappService.getSessionStatus(sessionId);
   }
 
-  private async checkSession(
+  async checkSession(
     session: {
-    _id: Types.ObjectId;
-    sessionId: string;
-    tenantId: Types.ObjectId;
-    phoneNumber?: string;
-    whatsappName?: string;
-    lastHealthStatus?: string;
-    consecutiveHealthFailures?: number;
-    lastHealthAlertAt?: Date;
+      _id: Types.ObjectId;
+      sessionId: string;
+      tenantId: Types.ObjectId;
+      phoneNumber?: string;
+      whatsappName?: string;
+      lastHealthStatus?: string;
+      consecutiveHealthFailures?: number;
+      lastHealthAlertAt?: Date;
     },
     options?: { isPeriodic?: boolean },
   ) {
@@ -286,8 +204,7 @@ export class WhatsAppHealthService implements OnModuleInit, OnModuleDestroy {
         reason: health?.lastStatus,
       });
     } catch (error: any) {
-      const consecutive =
-        (session.consecutiveHealthFailures || 0) + 1;
+      const consecutive = (session.consecutiveHealthFailures || 0) + 1;
       const now = Date.now();
       const nextHealthCheckAt =
         options?.isPeriodic === true
@@ -467,4 +384,3 @@ export class WhatsAppHealthService implements OnModuleInit, OnModuleDestroy {
     }
   }
 }
-

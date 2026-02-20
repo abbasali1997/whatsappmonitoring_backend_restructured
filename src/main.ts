@@ -1,5 +1,5 @@
 import { NestFactory } from "@nestjs/core";
-import { ConsoleLogger, ValidationPipe } from "@nestjs/common";
+import { ValidationPipe } from "@nestjs/common";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { ConfigService } from "@nestjs/config";
 import helmet from "helmet";
@@ -25,10 +25,10 @@ function registerProcessGuards() {
   attachOnce("unhandledRejection", (reason: any, promise: Promise<any>) => {
     try {
       // eslint-disable-next-line no-console
-      console.error(
-        "[PROCESS] unhandledRejection (process will NOT exit):",
-        { reason, promise },
-      );
+      console.error("[PROCESS] unhandledRejection (process will NOT exit):", {
+        reason,
+        promise,
+      });
     } catch {
       // ignore
     }
@@ -83,7 +83,7 @@ async function bootstrap() {
 
   // Use default logger on localhost
   if (isLocalhost) {
-    app.useLogger(['log', 'error', 'warn', 'debug', 'verbose']);
+    app.useLogger(["log", "error", "warn", "debug", "verbose"]);
   } else {
     app.useLogger(new ApplicationInsightsLogger("Application", true));
   }
@@ -157,7 +157,10 @@ async function bootstrap() {
 bootstrap().catch((err) => {
   try {
     // eslint-disable-next-line no-console
-    console.error("[BOOTSTRAP] Fatal error during startup (process will NOT exit):", err);
+    console.error(
+      "[BOOTSTRAP] Fatal error during startup (process will NOT exit):",
+      err,
+    );
   } catch {
     // ignore
   }

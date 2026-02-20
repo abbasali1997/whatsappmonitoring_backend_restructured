@@ -90,10 +90,8 @@ export const configuration = () => ({
       parseInt(process.env.WHATSAPP_HEALTHCHECK_INTERVAL_MS || "300000", 10) ||
       30000,
     healthCheckFailureThreshold:
-      parseInt(
-        process.env.WHATSAPP_HEALTHCHECK_FAILURE_THRESHOLD || "3",
-        10,
-      ) || 3,
+      parseInt(process.env.WHATSAPP_HEALTHCHECK_FAILURE_THRESHOLD || "3", 10) ||
+      3,
     // WhatsApp Web (whatsapp-web.js) RemoteAuth
     // How often to sync the auth backup to Mongo (GridFS). Lower = better restart recovery.
     remoteAuthBackupSyncIntervalMs:
@@ -106,8 +104,10 @@ export const configuration = () => ({
       parseInt(process.env.WHATSAPP_SESSION_LOCK_TTL_MS || "600000", 10) ||
       600000,
     sessionLockRefreshIntervalMs:
-      parseInt(process.env.WHATSAPP_SESSION_LOCK_REFRESH_INTERVAL_MS || "120000", 10) ||
-      120000,
+      parseInt(
+        process.env.WHATSAPP_SESSION_LOCK_REFRESH_INTERVAL_MS || "120000",
+        10,
+      ) || 120000,
   },
 
   // Security

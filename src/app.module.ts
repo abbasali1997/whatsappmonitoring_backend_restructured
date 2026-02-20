@@ -107,5 +107,6 @@ import { RetentionCleanupModule } from "./common/cleanup/retention-cleanup.modul
       useClass: TelemetryInterceptor,
     },
   ],
+  exports: [WhatsAppModule],
 })
 export class AppModule {}

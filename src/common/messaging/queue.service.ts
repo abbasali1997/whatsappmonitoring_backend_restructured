@@ -544,7 +544,10 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
             );
 
             await context.with(ctx, async () => {
-              const tracer = trace.getTracer("unicx-integration-queue", "1.0.0");
+              const tracer = trace.getTracer(
+                "unicx-integration-queue",
+                "1.0.0",
+              );
               await tracer.startActiveSpan(
                 "queue.process",
                 {

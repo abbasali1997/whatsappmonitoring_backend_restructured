@@ -26,7 +26,7 @@ import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { RolesGuard } from "../auth/roles.guard";
 import { Roles, RequireTenant } from "../auth/decorators";
 import { UserRole } from "../../common/schemas/user.schema";
-import { SYSTEM_ENTITY_ID } from "@/common/constants/system-entity";
+import { SYSTEM_ENTITY_ID } from "../../common/constants/system-entity";
 import { Types } from "mongoose";
 
 @ApiTags("WhatsApp")
