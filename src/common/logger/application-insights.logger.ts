@@ -49,69 +49,68 @@ export class ApplicationInsightsLogger implements LoggerService {
 
       // Use an active span so log entries correlate with the request trace.
       this.tracer.startActiveSpan(`Log: ${level}`, { kind: 0 }, (span) => {
-
-      // Add log attributes
-      span.setAttribute("log.level", level);
-      span.setAttribute(
-        "log.message",
-        this.formatMessage(message, optionalParams),
-      );
-
-      if (this.context) {
-        span.setAttribute("log.context", this.context);
-      }
-
-      // Add severity level for Application Insights
-      const severityLevel = this.mapLogLevelToSeverity(level);
-      span.setAttribute("severity", severityLevel);
-
-      // Add timestamp
-      span.setAttribute("timestamp", new Date().toISOString());
-
-      // Add correlation id from baggage (if present)
-      try {
-        const bag = propagation.getBaggage(context.active());
-        const cid = bag?.getEntry("correlationId")?.value;
-        if (cid) {
-          span.setAttribute("correlation.id", cid);
-        }
-      } catch {
-        // ignore
-      }
-
-      // Add optional parameters as attributes if they exist
-      if (optionalParams && optionalParams.length > 0) {
-        optionalParams.forEach((param, index) => {
-          try {
-            if (typeof param === "object" && param !== null) {
-              // For objects, stringify and add as attribute
-              const paramStr = JSON.stringify(param);
-              if (paramStr.length < 8000) {
-                span.setAttribute(`log.param.${index}`, paramStr);
-              } else {
-                span.setAttribute(
-                  `log.param.${index}`,
-                  paramStr.substring(0, 8000) + "...[TRUNCATED]",
-                );
-              }
-            } else {
-              span.setAttribute(`log.param.${index}`, String(param));
-            }
-          } catch (e) {
-            // Skip if we can't serialize
-          }
-        });
-      }
-
-      // Mark span as error if it's an error level
-      if (level === "error") {
-        span.setAttribute("error", true);
-        span.recordException(
-          new Error(this.formatMessage(message, optionalParams)),
+        // Add log attributes
+        span.setAttribute("log.level", level);
+        span.setAttribute(
+          "log.message",
+          this.formatMessage(message, optionalParams),
         );
-      }
 
-      span.end();
+        if (this.context) {
+          span.setAttribute("log.context", this.context);
+        }
+
+        // Add severity level for Application Insights
+        const severityLevel = this.mapLogLevelToSeverity(level);
+        span.setAttribute("severity", severityLevel);
+
+        // Add timestamp
+        span.setAttribute("timestamp", new Date().toISOString());
+
+        // Add correlation id from baggage (if present)
+        try {
+          const bag = propagation.getBaggage(context.active());
+          const cid = bag?.getEntry("correlationId")?.value;
+          if (cid) {
+            span.setAttribute("correlation.id", cid);
+          }
+        } catch {
+          // ignore
+        }
+
+        // Add optional parameters as attributes if they exist
+        if (optionalParams && optionalParams.length > 0) {
+          optionalParams.forEach((param, index) => {
+            try {
+              if (typeof param === "object" && param !== null) {
+                // For objects, stringify and add as attribute
+                const paramStr = JSON.stringify(param);
+                if (paramStr.length < 8000) {
+                  span.setAttribute(`log.param.${index}`, paramStr);
+                } else {
+                  span.setAttribute(
+                    `log.param.${index}`,
+                    paramStr.substring(0, 8000) + "...[TRUNCATED]",
+                  );
+                }
+              } else {
+                span.setAttribute(`log.param.${index}`, String(param));
+              }
+            } catch (e) {
+              // Skip if we can't serialize
+            }
+          });
+        }
+
+        // Mark span as error if it's an error level
+        if (level === "error") {
+          span.setAttribute("error", true);
+          span.recordException(
+            new Error(this.formatMessage(message, optionalParams)),
+          );
+        }
+
+        span.end();
       });
       // Note: Logs are sent as spans, so they're tracked in spansExported count
     } catch (error) {

@@ -62,15 +62,13 @@ const getCompanyName = (): string =>
   process.env.COMPANY_NAME?.trim() || "2N5 Global";
 
 const getCompanyAddress = (): string =>
-  process.env.COMPANY_ADDRESS?.trim() ||
-  "123 Business Street, Tech City";
+  process.env.COMPANY_ADDRESS?.trim() || "123 Business Street, Tech City";
 
 const getSupportEmail = (): string =>
   process.env.SUPPORT_EMAIL?.trim() || "support@2n5global.com";
 
 const getLogoUrl = (): string =>
-  process.env.LOGO_URL?.trim() ||
-  "https://system.2n5global.com/favicon.svg";
+  process.env.LOGO_URL?.trim() || "https://system.2n5global.com/favicon.svg";
 
 const getPublicQrLink = (phoneNumber: string): string => {
   const frontendUrl = getFrontendUrl();
@@ -215,7 +213,9 @@ export class UsersService {
         query.whatsappConnectionStatus = WhatsAppConnectionStatus.CONNECTED;
       } else if (desired === "disconnected") {
         query.whatsappConnectedAt = { $ne: null };
-        query.whatsappConnectionStatus = { $ne: WhatsAppConnectionStatus.CONNECTED };
+        query.whatsappConnectionStatus = {
+          $ne: WhatsAppConnectionStatus.CONNECTED,
+        };
       } else if (desired === "requested") {
         query.whatsappConnectedAt = null;
         query.$and = (query.$and || []).concat([
@@ -234,7 +234,9 @@ export class UsersService {
           // Default state in DB is often DISCONNECTED; treat that as "new" only when no QR history exists.
           {
             $or: [
-              { whatsappConnectionStatus: WhatsAppConnectionStatus.DISCONNECTED },
+              {
+                whatsappConnectionStatus: WhatsAppConnectionStatus.DISCONNECTED,
+              },
               { whatsappConnectionStatus: { $exists: false } },
               { whatsappConnectionStatus: null },
             ],
@@ -251,7 +253,9 @@ export class UsersService {
         sessionQuery.tenantId = new Types.ObjectId(tenantId);
       }
 
-      if (String(filters.whatsappSessionStatus).toLowerCase() === "qr_required") {
+      if (
+        String(filters.whatsappSessionStatus).toLowerCase() === "qr_required"
+      ) {
         // Match true QR_REQUIRED sessions, plus FAILED sessions that still have a QR code
         // (the UI normalizes those as qr_required).
         sessionQuery.$or = [
@@ -265,7 +269,9 @@ export class UsersService {
           },
         ];
       } else {
-        sessionQuery.status = String(filters.whatsappSessionStatus).toLowerCase();
+        sessionQuery.status = String(
+          filters.whatsappSessionStatus,
+        ).toLowerCase();
       }
 
       const userIds = (await this.whatsappSessionModel.distinct(
@@ -333,7 +339,8 @@ export class UsersService {
       }
       const or: any[] = [];
       if (userIds.length) or.push({ userId: { $in: userIds } });
-      if (desiredSessionIds.length) or.push({ sessionId: { $in: desiredSessionIds } });
+      if (desiredSessionIds.length)
+        or.push({ sessionId: { $in: desiredSessionIds } });
       const desiredDigits = Array.from(
         new Set(desiredSessionIds.map((sid) => sid.replace(/^whatsapp-/, ""))),
       ).filter(Boolean);
@@ -346,7 +353,10 @@ export class UsersService {
         or.length === 0
           ? []
           : await this.whatsappSessionModel
-              .find({ ...(Object.keys(sessionQuery).length ? sessionQuery : {}), $or: or })
+              .find({
+                ...(Object.keys(sessionQuery).length ? sessionQuery : {}),
+                $or: or,
+              })
               // IMPORTANT: don't include qrCode blobs in list responses (payload/memory risk)
               .select(
                 "userId sessionId phoneNumber status qrCodeGeneratedAt qrCodeExpiresAt connectedAt disconnectedAt lastActivityAt whatsappName messagesSent messagesReceived messagesDelivered messagesFailed lastHealthStatus lastHealthCheckAt nextHealthCheckAt consecutiveHealthFailures lastHealthError updatedAt",
@@ -363,7 +373,9 @@ export class UsersService {
 
     const pickNewest = (existing: any | undefined, next: any) => {
       if (!existing) return next;
-      const existingUpdated = new Date((existing as any)?.updatedAt || 0).getTime();
+      const existingUpdated = new Date(
+        (existing as any)?.updatedAt || 0,
+      ).getTime();
       const nextUpdated = new Date((next as any)?.updatedAt || 0).getTime();
       return nextUpdated >= existingUpdated ? next : existing;
     };
@@ -374,19 +386,29 @@ export class UsersService {
 
     for (const s of sessions) {
       const sid = String((s as any)?.sessionId || "").trim();
-      if (sid) sessionBySessionId.set(sid, pickNewest(sessionBySessionId.get(sid), s));
+      if (sid)
+        sessionBySessionId.set(sid, pickNewest(sessionBySessionId.get(sid), s));
 
-      const uid = (s as any)?.userId?.toString?.() || String((s as any)?.userId || "");
-      if (uid) sessionByUserId.set(uid, pickNewest(sessionByUserId.get(uid), s));
+      const uid =
+        (s as any)?.userId?.toString?.() || String((s as any)?.userId || "");
+      if (uid)
+        sessionByUserId.set(uid, pickNewest(sessionByUserId.get(uid), s));
 
       const phone = String((s as any)?.phoneNumber || "");
       const digits = phone.replace(/[^0-9]/g, "");
-      if (digits) sessionByPhoneDigits.set(digits, pickNewest(sessionByPhoneDigits.get(digits), s));
+      if (digits)
+        sessionByPhoneDigits.set(
+          digits,
+          pickNewest(sessionByPhoneDigits.get(digits), s),
+        );
     }
 
     const computeWhatsAppStatus = (userObj: any, session: any | undefined) => {
-      const connectedAt = userObj?.whatsappConnectedAt || session?.connectedAt || null;
-      const currentConn = String(userObj?.whatsappConnectionStatus || "").toLowerCase();
+      const connectedAt =
+        userObj?.whatsappConnectedAt || session?.connectedAt || null;
+      const currentConn = String(
+        userObj?.whatsappConnectionStatus || "",
+      ).toLowerCase();
       const currentSession = String(session?.status || "").toLowerCase();
 
       const isCurrentlyConnected =
@@ -400,7 +422,9 @@ export class UsersService {
       if (connectedAt) return "disconnected";
 
       // QR requested/sent at least once (or in-flight connection).
-      const hasQrHistory = Array.isArray(userObj?.qrInvitationHistory) && userObj.qrInvitationHistory.length > 0;
+      const hasQrHistory =
+        Array.isArray(userObj?.qrInvitationHistory) &&
+        userObj.qrInvitationHistory.length > 0;
       const isInFlight =
         currentConn === WhatsAppConnectionStatus.CONNECTING ||
         currentConn === WhatsAppConnectionStatus.FAILED ||
@@ -691,8 +715,13 @@ export class UsersService {
     }
 
     // If role is being updated (and email isn't changing), ensure (email, role) is still unique among active users
-    if ((updateUserDto as any)?.role && (updateUserDto as any)?.role !== user.role) {
-      const normalizedCurrentEmail = String(user.email || "").toLowerCase().trim();
+    if (
+      (updateUserDto as any)?.role &&
+      (updateUserDto as any)?.role !== user.role
+    ) {
+      const normalizedCurrentEmail = String(user.email || "")
+        .toLowerCase()
+        .trim();
       const existingForRole = await this.userModel.findOne({
         _id: { $ne: new Types.ObjectId(trimmedId) },
         isActive: true,
@@ -749,10 +778,19 @@ export class UsersService {
     inviteUserDto: InviteUserDto,
     invitedBy: string,
   ): Promise<User> {
-    const { phoneNumber, email, firstName, lastName, entityId, role, language } =
-      inviteUserDto;
+    const {
+      phoneNumber,
+      email,
+      firstName,
+      lastName,
+      entityId,
+      role,
+      language,
+    } = inviteUserDto;
 
-    const normalizedEmail = String(email || "").toLowerCase().trim();
+    const normalizedEmail = String(email || "")
+      .toLowerCase()
+      .trim();
     const desiredRole = role || UserRole.USER;
 
     // Phone number is required for regular users
@@ -770,11 +808,18 @@ export class UsersService {
     // Check if user already exists
     const existingUser = await this.userModel.findOne({
       isActive: true,
-      $or: [{ phoneNumber: e164Phone }, { email: normalizedEmail, role: desiredRole }],
+      $or: [
+        { phoneNumber: e164Phone },
+        { email: normalizedEmail, role: desiredRole },
+      ],
     });
 
     if (existingUser) {
-      throw new BadRequestException(existingUser.phoneNumber === e164Phone ? MESSAGES.USER.PHONE_ALREADY_EXISTS : MESSAGES.USER.EMAIL_ALREADY_EXISTS);
+      throw new BadRequestException(
+        existingUser.phoneNumber === e164Phone
+          ? MESSAGES.USER.PHONE_ALREADY_EXISTS
+          : MESSAGES.USER.EMAIL_ALREADY_EXISTS,
+      );
     }
 
     // Validate entity exists
@@ -836,7 +881,9 @@ export class UsersService {
     const { email, firstName, lastName, entityId, role, language } =
       inviteUserDto;
 
-    const normalizedEmail = String(email || "").toLowerCase().trim();
+    const normalizedEmail = String(email || "")
+      .toLowerCase()
+      .trim();
     const desiredRole = role || UserRole.TENANT_ADMIN;
 
     // Check if user already exists
@@ -1249,9 +1296,7 @@ export class UsersService {
                   ? e.parentId.toString()
                   : null;
                 const currentParentIdStr =
-                  currentParentId !== null
-                    ? currentParentId.toString()
-                    : null;
+                  currentParentId !== null ? currentParentId.toString() : null;
 
                 if (currentParentId === null) {
                   return (
@@ -1293,9 +1338,7 @@ export class UsersService {
                   .split(">")
                   .map((segment) => segment.trim().toLowerCase())
                   .filter((segment) => segment.length > 0);
-                if (
-                  normalizedEntityPath.length < normalizedCleanPath.length
-                ) {
+                if (normalizedEntityPath.length < normalizedCleanPath.length) {
                   return false;
                 }
                 const offset =
@@ -1503,9 +1546,7 @@ export class UsersService {
                   ? e.parentId.toString()
                   : null;
                 const currentParentIdStr =
-                  currentParentId !== null
-                    ? currentParentId.toString()
-                    : null;
+                  currentParentId !== null ? currentParentId.toString() : null;
 
                 if (currentParentId === null) {
                   return (
@@ -1618,7 +1659,8 @@ export class UsersService {
                 process.env.LOGO_URL ||
                 "https://system.2n5global.com/favicon.svg",
               loginUrl: process.env.FRONTEND_URL + "/login",
-              supportEmail: process.env.SUPPORT_EMAIL || "support@2n5global.com",
+              supportEmail:
+                process.env.SUPPORT_EMAIL || "support@2n5global.com",
               companyName: process.env.COMPANY_NAME || "2N5 Global",
               companyAddress:
                 process.env.COMPANY_ADDRESS || "123 Business Street, Tech City",
@@ -1732,9 +1774,8 @@ export class UsersService {
       throw new BadRequestException(MESSAGES.AUTH.PASSWORD_TOO_WEAK);
     }
 
-    const hashedPassword = await this.authService.hashPassword(
-      temporaryPassword,
-    );
+    const hashedPassword =
+      await this.authService.hashPassword(temporaryPassword);
 
     const systemAdmin = await this.userModel.create({
       _id: new Types.ObjectId(),
@@ -1936,7 +1977,12 @@ export class UsersService {
    */
   async exportUserData(params: {
     userId: string;
-    tenantId: string | Types.ObjectId | { _id?: string | Types.ObjectId } | null | undefined;
+    tenantId:
+      | string
+      | Types.ObjectId
+      | { _id?: string | Types.ObjectId }
+      | null
+      | undefined;
     requestedBy: string;
     includeMessages?: boolean;
     messageLimit?: number;
@@ -2343,10 +2389,7 @@ export class UsersService {
     });
   }
 
-  async resendUserInvitation(
-    userId: string,
-    tenantId: string,
-  ): Promise<void> {
+  async resendUserInvitation(userId: string, tenantId: string): Promise<void> {
     const user = await this.findOne(userId, tenantId);
 
     if (!user.email) {
@@ -2412,24 +2455,21 @@ export class UsersService {
       }
     } catch (err) {
       // Session doesn't exist yet, which is fine - we'll create it
-      this.logger.debug(
-        `Session ${sessionId} not found, will create/recreate`,
-      );
+      this.logger.debug(`Session ${sessionId} not found, will create/recreate`);
     }
 
     try {
-      const hadClient =
-        this.whatsappService.hasActiveClient(sessionId);
+      const hadClient = this.whatsappService.hasActiveClient(sessionId);
 
       // Ensure session exists and initialize client if needed
       const { initializedNewClient } =
         await this.whatsappService.recreateSession(
-        sessionId,
-        new Types.ObjectId(userId),
-        userId, // Use the user's ID as the creator since we don't have updatedBy/createdBy
-        user.entityId.toString(),
-        user.tenantId ? user.tenantId.toString() : "",
-      );
+          sessionId,
+          new Types.ObjectId(userId),
+          userId, // Use the user's ID as the creator since we don't have updatedBy/createdBy
+          user.entityId.toString(),
+          user.tenantId ? user.tenantId.toString() : "",
+        );
 
       if (!hadClient && initializedNewClient) {
         // Update user status to connecting only when a new client was started
@@ -2459,7 +2499,9 @@ export class UsersService {
       } catch (historyErr) {
         this.logger.warn(
           `Failed to record QR invitation history for user ${userId}: ${
-            historyErr instanceof Error ? historyErr.message : String(historyErr)
+            historyErr instanceof Error
+              ? historyErr.message
+              : String(historyErr)
           }`,
         );
       }
@@ -2530,19 +2572,23 @@ export class UsersService {
     const user = await this.findOne(userId, tenantId);
 
     if (!user.phoneNumber) {
-      throw new NotFoundException("User does not have a phone number configured");
+      throw new NotFoundException(
+        "User does not have a phone number configured",
+      );
     }
 
     const sessionId = `whatsapp-${user.phoneNumber.slice(1)}`;
 
     try {
-      const sessionStatus = await this.whatsappService.getSessionStatus(sessionId);
+      const sessionStatus =
+        await this.whatsappService.getSessionStatus(sessionId);
 
       return {
         sessionId,
         phoneNumber: user.phoneNumber,
         healthStatus: {
-          lastCheck: sessionStatus.lastHealthCheckAt || new Date().toISOString(),
+          lastCheck:
+            sessionStatus.lastHealthCheckAt || new Date().toISOString(),
           lastStatus: sessionStatus.lastHealthStatus || "unknown",
           consecutiveFailures: sessionStatus.consecutiveHealthFailures || 0,
           successRate: 100, // TODO: Calculate actual success rate
@@ -2551,7 +2597,10 @@ export class UsersService {
         },
       };
     } catch (error) {
-      this.logger.error(`Failed to get health status for user ${userId}:`, error);
+      this.logger.error(
+        `Failed to get health status for user ${userId}:`,
+        error,
+      );
       throw new NotFoundException("WhatsApp session not found for this user");
     }
   }
@@ -2560,7 +2609,9 @@ export class UsersService {
     const user = await this.findOne(userId, tenantId);
 
     if (!user.phoneNumber) {
-      throw new NotFoundException("User does not have a phone number configured");
+      throw new NotFoundException(
+        "User does not have a phone number configured",
+      );
     }
 
     const sessionId = `whatsapp-${user.phoneNumber.slice(1)}`;
@@ -2571,7 +2622,9 @@ export class UsersService {
       const sessionStatus =
         await this.whatsappHealthService.runHealthCheckForSessionId(sessionId);
 
-      this.logger.log(`Triggered health check for session ${sessionId} (manual)`);
+      this.logger.log(
+        `Triggered health check for session ${sessionId} (manual)`,
+      );
 
       return {
         sessionId,
@@ -2596,7 +2649,10 @@ export class UsersService {
         },
       };
     } catch (error) {
-      this.logger.error(`Failed to trigger health check for user ${userId}:`, error);
+      this.logger.error(
+        `Failed to trigger health check for user ${userId}:`,
+        error,
+      );
       throw new BadRequestException("Failed to trigger health check");
     }
   }

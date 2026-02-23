@@ -264,7 +264,7 @@ describe("DashboardService", () => {
   });
 
   describe("internal stats methods", () => {
-    it("should compute entity stats" , async () => {
+    it("should compute entity stats", async () => {
       const entityId = new Types.ObjectId().toString();
       mockEntityModel.countDocuments
         .mockResolvedValueOnce(2) // totalEntities

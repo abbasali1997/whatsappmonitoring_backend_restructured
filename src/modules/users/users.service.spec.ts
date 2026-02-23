@@ -334,10 +334,9 @@ describe("UsersService", () => {
       const pseudonymizeArg =
         mockWhatsAppService.pseudonymizeMessagesForDeletedUser.mock.calls[0][0];
       expect(String(pseudonymizeArg.tenantId)).toBe(tenantId);
-      expect(mockWhatsAppService.deactivateSessionsForDeletedUser).toHaveBeenCalledWith(
-        userId,
-        deletedBy,
-      );
+      expect(
+        mockWhatsAppService.deactivateSessionsForDeletedUser,
+      ).toHaveBeenCalledWith(userId, deletedBy);
 
       const updateArg = mockUserModel.findByIdAndUpdate.mock.calls[0][1];
       expect(updateArg).toEqual(

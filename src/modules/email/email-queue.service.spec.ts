@@ -262,15 +262,19 @@ describe("EmailQueueService", () => {
   describe("localhost bypass branches", () => {
     beforeEach(() => {
       // Force isLocalhost() to return true
-      mockConfigService.get.mockImplementation((key: string, defaultValue?: any) => {
-        if (key === "app.nodeEnv") return "development";
-        if (key === "app.baseUrl") return "http://localhost:3000";
-        return defaultValue;
-      });
+      mockConfigService.get.mockImplementation(
+        (key: string, defaultValue?: any) => {
+          if (key === "app.nodeEnv") return "development";
+          if (key === "app.baseUrl") return "http://localhost:3000";
+          return defaultValue;
+        },
+      );
     });
 
     it("should bypass queue for queueInvitationEmail on localhost", async () => {
-      await service.queueInvitationEmail("test@example.com", "invitation", { firstName: "John" });
+      await service.queueInvitationEmail("test@example.com", "invitation", {
+        firstName: "John",
+      });
 
       expect(mockEmailService.sendInvitationEmail).toHaveBeenCalledWith(
         "test@example.com",

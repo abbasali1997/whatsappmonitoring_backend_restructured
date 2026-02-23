@@ -94,5 +94,3 @@ describe("correlationIdMiddleware", () => {
     expect(next).toHaveBeenCalledTimes(1);
   });
 });
-
-

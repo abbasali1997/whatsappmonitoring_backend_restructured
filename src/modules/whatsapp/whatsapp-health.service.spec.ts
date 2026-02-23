@@ -49,7 +49,10 @@ describe("WhatsAppHealthService", () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         WhatsAppHealthService,
-        { provide: getModelToken("WhatsAppSession"), useValue: mockSessionModel },
+        {
+          provide: getModelToken("WhatsAppSession"),
+          useValue: mockSessionModel,
+        },
         { provide: getModelToken("User"), useValue: mockUserModel },
         { provide: WhatsAppService, useValue: mockWhatsAppService },
         { provide: ConfigService, useValue: mockConfigService },
@@ -80,7 +83,9 @@ describe("WhatsAppHealthService", () => {
 
     await service.runHealthChecks();
 
-    expect(mockWhatsAppService.requestReconnect).toHaveBeenCalledWith("session-1");
+    expect(mockWhatsAppService.requestReconnect).toHaveBeenCalledWith(
+      "session-1",
+    );
   });
 
   it("should disconnect session and send alert email when failures exceed threshold (>3)", async () => {
@@ -104,7 +109,9 @@ describe("WhatsAppHealthService", () => {
 
     // Ensure notifyUser finds an email
     (mockUserModel.findOne as any) = jest.fn(() => ({
-      lean: jest.fn().mockResolvedValue({ email: "user@example.com", language: "en" }),
+      lean: jest
+        .fn()
+        .mockResolvedValue({ email: "user@example.com", language: "en" }),
     }));
 
     await service.runHealthChecks();

@@ -101,7 +101,8 @@ export function initTelemetry(
   // Check if running on localhost - disable telemetry in development
   const nodeEnv = process.env.NODE_ENV || "development";
   const isTestEnv =
-    nodeEnv === "test" || typeof (process as any).env.JEST_WORKER_ID !== "undefined";
+    nodeEnv === "test" ||
+    typeof (process as any).env.JEST_WORKER_ID !== "undefined";
   const baseUrl = process.env.BASE_URL || "http://localhost:3000";
   const isLocalhost =
     (nodeEnv === "development" ||
@@ -110,9 +111,7 @@ export function initTelemetry(
     !isTestEnv;
 
   if (isLocalhost) {
-    console.log(
-      "🔧 [LOCALHOST] Telemetry disabled for localhost development.",
-    );
+    console.log("🔧 [LOCALHOST] Telemetry disabled for localhost development.");
     return;
   }
 
@@ -406,7 +405,10 @@ export function initTelemetry(
     // Optional self-test:
     // - Off by default
     // - Never run in production (prevents accidental noise/costs)
-    if (ENABLE_SELF_TEST && (process.env.NODE_ENV || "development") !== "production") {
+    if (
+      ENABLE_SELF_TEST &&
+      (process.env.NODE_ENV || "development") !== "production"
+    ) {
       // Generate a test span to verify telemetry is working
       generateTestSpan(serviceName);
       // Generate test metrics to verify metrics export is working
@@ -474,7 +476,8 @@ export function generateTestMetrics(
   try {
     const nodeEnv = process.env.NODE_ENV || "development";
     const isTestEnv =
-      nodeEnv === "test" || typeof (process as any).env.JEST_WORKER_ID !== "undefined";
+      nodeEnv === "test" ||
+      typeof (process as any).env.JEST_WORKER_ID !== "undefined";
 
     const generate = () => {
       try {
@@ -623,9 +626,12 @@ function initializeWhatsAppMetrics(): void {
     const meter = metrics.getMeter("unicx-integration-whatsapp", "1.0.0");
 
     // Counter for WhatsApp alert events (blocked, disconnected, health failures)
-    whatsappAlertCounter = meter.createCounter("whatsapp.session.alerts.total", {
-      description: "Total number of WhatsApp session alert events",
-    });
+    whatsappAlertCounter = meter.createCounter(
+      "whatsapp.session.alerts.total",
+      {
+        description: "Total number of WhatsApp session alert events",
+      },
+    );
   } catch {
     // Silently fail if metrics aren't initialized yet
   }
@@ -698,7 +704,10 @@ export function logApiRequest(data: ApiRequestLogData): void {
           if ((safeHeaders as any).cookie) {
             (safeHeaders as any).cookie = "[REDACTED]";
           }
-          span.setAttribute("http.request.headers", JSON.stringify(safeHeaders));
+          span.setAttribute(
+            "http.request.headers",
+            JSON.stringify(safeHeaders),
+          );
         }
 
         if (data.requestQuery && Object.keys(data.requestQuery).length > 0) {
@@ -996,7 +1005,11 @@ export function recordQueueMessage(
  * - health check failures
  */
 export interface WhatsAppAlertEventData {
-  eventType: "disconnected" | "blocked" | "health_check_failed" | "auth_failure";
+  eventType:
+    | "disconnected"
+    | "blocked"
+    | "health_check_failed"
+    | "auth_failure";
   sessionId?: string;
   tenantId?: string;
   phoneNumber?: string;
@@ -1067,10 +1080,14 @@ export function recordWhatsAppHealthCheck(
     if (data.tenantId) span.setAttribute("tenant.id", data.tenantId);
     if (data.phoneNumber) span.setAttribute("phone.number", data.phoneNumber);
     if (typeof data.consecutiveFailures === "number") {
-      span.setAttribute("health.consecutive_failures", data.consecutiveFailures);
+      span.setAttribute(
+        "health.consecutive_failures",
+        data.consecutiveFailures,
+      );
     }
     if (data.reason) span.setAttribute("health.reason", data.reason);
-    if (data.errorMessage) span.setAttribute("error.message", data.errorMessage);
+    if (data.errorMessage)
+      span.setAttribute("error.message", data.errorMessage);
     if (data.status === "failed") span.setAttribute("error", true);
     span.end();
   } catch {

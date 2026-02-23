@@ -183,10 +183,7 @@ export class QrGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
-  emitStatus(
-    sessionId: string,
-    payload: { status: string; message?: string },
-  ) {
+  emitStatus(sessionId: string, payload: { status: string; message?: string }) {
     const normalizedId = this.normalizeSessionId(sessionId);
     if (!normalizedId) {
       return;
@@ -259,8 +256,10 @@ export class QrGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const room = this.getRoomName(normalizedId);
     // Check if there are still any sockets in this room
     const sockets =
-      (await this.server.in(room).allSockets().catch(() => undefined)) ||
-      undefined;
+      (await this.server
+        .in(room)
+        .allSockets()
+        .catch(() => undefined)) || undefined;
 
     if (sockets && sockets.size > 0) {
       // There are still clients listening for QR updates; keep the browser open
@@ -283,8 +282,10 @@ export class QrGateway implements OnGatewayConnection, OnGatewayDisconnect {
       try {
         // Re-check sockets; the user may have reopened the QR screen
         const currentSockets =
-          (await this.server.in(room).allSockets().catch(() => undefined)) ||
-          undefined;
+          (await this.server
+            .in(room)
+            .allSockets()
+            .catch(() => undefined)) || undefined;
         if (currentSockets && currentSockets.size > 0) {
           this.logger.debug(
             `[QR] Skipping idle close for session ${normalizedId}; subscribers returned`,
@@ -344,4 +345,3 @@ export class QrGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.sessionCloseTimers.set(normalizedId, timer);
   }
 }
-

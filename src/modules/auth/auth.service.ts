@@ -35,8 +35,7 @@ const getCompanyName = (): string =>
   process.env.COMPANY_NAME?.trim() || "2N5 Global";
 
 const getCompanyAddress = (): string =>
-  process.env.COMPANY_ADDRESS?.trim() ||
-  "123 Business Street, Tech City";
+  process.env.COMPANY_ADDRESS?.trim() || "123 Business Street, Tech City";
 
 const getSupportEmail = (): string =>
   process.env.SUPPORT_EMAIL?.trim() || "support@2n5global.com";
@@ -172,19 +171,28 @@ export class AuthService {
       // limit concurrent sessions
       const userId = user._id.toString();
       const sessions = (await this.cacheService.getUserSession(userId)) || [];
-      const maxSessions = parseInt(process.env.MAX_CONCURRENT_SESSIONS || "3", 10);
+      const maxSessions = parseInt(
+        process.env.MAX_CONCURRENT_SESSIONS || "3",
+        10,
+      );
 
       // remove oldest sessions when limit reached
       while (sessions.length >= maxSessions) {
         const old = sessions.shift();
         if (old && old.refreshToken) {
-          await this.cacheService.del(`${CacheKey.REFRESH_TOKEN}${old.refreshToken}`);
+          await this.cacheService.del(
+            `${CacheKey.REFRESH_TOKEN}${old.refreshToken}`,
+          );
         }
       }
 
       sessions.push(sessionData);
       await this.cacheService.cacheUserSession(userId, sessions, ttl);
-      await this.cacheService.set(`${CacheKey.REFRESH_TOKEN}${refresh_token}`, userId, ttl);
+      await this.cacheService.set(
+        `${CacheKey.REFRESH_TOKEN}${refresh_token}`,
+        userId,
+        ttl,
+      );
     } catch (err) {
       // Continue even if cache operations fail
       // This ensures login doesn't break when Redis is unavailable
@@ -212,7 +220,9 @@ export class AuthService {
   async refreshToken(refreshToken: string): Promise<{ access_token: string }> {
     try {
       // Check token is registered in cache
-      const cachedUserId = await this.cacheService.get(`${CacheKey.REFRESH_TOKEN}${refreshToken}`);
+      const cachedUserId = await this.cacheService.get(
+        `${CacheKey.REFRESH_TOKEN}${refreshToken}`,
+      );
       if (!cachedUserId) {
         throw new UnauthorizedException("Invalid refresh token");
       }
@@ -257,7 +267,9 @@ export class AuthService {
       const sessions = (await this.cacheService.getUserSession(userId)) || [];
       for (const s of sessions) {
         if (s?.refreshToken) {
-          await this.cacheService.del(`${CacheKey.REFRESH_TOKEN}${s.refreshToken}`);
+          await this.cacheService.del(
+            `${CacheKey.REFRESH_TOKEN}${s.refreshToken}`,
+          );
         }
       }
 
@@ -505,10 +517,7 @@ export class AuthService {
 
     let user =
       userId &&
-      (await this.userModel
-        .findById(userId)
-        .select("+password")
-        .exec());
+      (await this.userModel.findById(userId).select("+password").exec());
 
     if (!user && email) {
       user = await this.userModel

@@ -1,4 +1,9 @@
-import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
+import {
+  Injectable,
+  Logger,
+  OnModuleDestroy,
+  OnModuleInit,
+} from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { SchedulerRegistry } from "@nestjs/schedule";
 import { ConfigService } from "@nestjs/config";
@@ -85,7 +90,8 @@ export class RetentionCleanupService implements OnModuleInit, OnModuleDestroy {
     try {
       const now = new Date();
       const qrDays =
-        Number(this.configService.get<string>("cleanup.qrCodeCleanupDays")) || 7;
+        Number(this.configService.get<string>("cleanup.qrCodeCleanupDays")) ||
+        7;
       const inviteDays =
         Number(
           this.configService.get<string>("cleanup.failedInvitationCleanupDays"),

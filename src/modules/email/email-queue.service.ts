@@ -106,8 +106,14 @@ export class EmailQueueService {
    * @returns true if running on localhost, false otherwise
    */
   private isLocalhost(): boolean {
-    const nodeEnv = this.configService.get<string>("app.nodeEnv", "development");
-    const baseUrl = this.configService.get<string>("app.baseUrl", "http://localhost:3000");
+    const nodeEnv = this.configService.get<string>(
+      "app.nodeEnv",
+      "development",
+    );
+    const baseUrl = this.configService.get<string>(
+      "app.baseUrl",
+      "http://localhost:3000",
+    );
     return (
       nodeEnv === "development" ||
       baseUrl.includes("localhost") ||
@@ -137,7 +143,11 @@ export class EmailQueueService {
       this.logger.debug(
         `[LOCALHOST] Bypassing queue, calling email service directly: to=${email}`,
       );
-      await this.emailService.sendInvitationEmail(email, templateId, templateData);
+      await this.emailService.sendInvitationEmail(
+        email,
+        templateId,
+        templateData,
+      );
       return;
     }
 

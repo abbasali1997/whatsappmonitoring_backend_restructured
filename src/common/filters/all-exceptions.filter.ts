@@ -46,8 +46,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         message,
       };
 
-      const stack =
-        exception instanceof Error ? exception.stack : undefined;
+      const stack = exception instanceof Error ? exception.stack : undefined;
       const name =
         exception instanceof Error ? exception.name : "UnknownException";
 
@@ -81,5 +80,3 @@ export class AllExceptionsFilter implements ExceptionFilter {
     }
   }
 }
-
-

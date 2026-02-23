@@ -46,8 +46,14 @@ export class EmailQueueProcessor implements OnModuleInit, OnModuleDestroy {
    * @returns true if running on localhost, false otherwise
    */
   private isLocalhost(): boolean {
-    const nodeEnv = this.configService.get<string>("app.nodeEnv", "development");
-    const baseUrl = this.configService.get<string>("app.baseUrl", "http://localhost:3000");
+    const nodeEnv = this.configService.get<string>(
+      "app.nodeEnv",
+      "development",
+    );
+    const baseUrl = this.configService.get<string>(
+      "app.baseUrl",
+      "http://localhost:3000",
+    );
     return (
       nodeEnv === "development" ||
       baseUrl.includes("localhost") ||

@@ -72,7 +72,9 @@ export const validationSchema = Joi.object({
   // How often RemoteAuth syncs the session backup to Mongo (GridFS).
   // Lower values improve restart recovery (especially if the server restarts soon after linking).
   // whatsapp-web.js enforces a minimum of 60000ms (1 minute).
-  WHATSAPP_REMOTE_AUTH_BACKUP_SYNC_INTERVAL_MS: Joi.number().min(60000).default(60000),
+  WHATSAPP_REMOTE_AUTH_BACKUP_SYNC_INTERVAL_MS: Joi.number()
+    .min(60000)
+    .default(60000),
   // Cross-pod session ownership lock (milliseconds)
   WHATSAPP_SESSION_LOCK_TTL_MS: Joi.number().default(600000),
   WHATSAPP_SESSION_LOCK_REFRESH_INTERVAL_MS: Joi.number().default(120000),

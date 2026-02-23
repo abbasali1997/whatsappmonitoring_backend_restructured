@@ -1,4 +1,10 @@
-import { Injectable, Logger, Inject, OnModuleInit, OnModuleDestroy } from "@nestjs/common";
+import {
+  Injectable,
+  Logger,
+  Inject,
+  OnModuleInit,
+  OnModuleDestroy,
+} from "@nestjs/common";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { Cache } from "cache-manager";
 import { ConfigService } from "@nestjs/config";
@@ -33,7 +39,10 @@ export interface CacheStats {
   startTime: Date;
 }
 
-export type CacheStatsResponse = CacheStats & { hitRate: string; uptime: number };
+export type CacheStatsResponse = CacheStats & {
+  hitRate: string;
+  uptime: number;
+};
 
 @Injectable()
 export class CacheService implements OnModuleInit, OnModuleDestroy {
@@ -56,10 +65,10 @@ export class CacheService implements OnModuleInit, OnModuleDestroy {
   ) {}
 
   async onModuleInit() {
-    this.isRedisEnabled = this.configService.get<boolean>("redis.enabled") || false;
+    this.isRedisEnabled =
+      this.configService.get<boolean>("redis.enabled") || false;
     // Keep only connection verification; avoid noisy logs
     await this.testConnection();
-    
   }
 
   /**
@@ -67,23 +76,23 @@ export class CacheService implements OnModuleInit, OnModuleDestroy {
    */
   private async testConnection(): Promise<void> {
     try {
-      const testKey = '__cache_connection_test__';
+      const testKey = "__cache_connection_test__";
       const testValue = Date.now().toString();
-      
+
       await this.cacheManager.set(testKey, testValue, 10);
       const result = await this.cacheManager.get(testKey);
       await this.cacheManager.del(testKey);
 
       if (result === testValue) {
         // Keep only the important connection success message
-        this.logger.log('✅ Cache Connection Test: SUCCESS');
-        this.logger.log(`Type: ${this.isRedisEnabled ? 'Redis' : 'In-Memory'}`);
+        this.logger.log("✅ Cache Connection Test: SUCCESS");
+        this.logger.log(`Type: ${this.isRedisEnabled ? "Redis" : "In-Memory"}`);
       } else {
-        throw new Error('Connection test failed: value mismatch');
+        throw new Error("Connection test failed: value mismatch");
       }
     } catch (error) {
       // Keep only the error for connection tests
-      this.logger.error('❌ Cache Connection Test: FAILED');
+      this.logger.error("❌ Cache Connection Test: FAILED");
       this.logger.error(`Error: ${error.message}`);
     }
   }
@@ -98,9 +107,13 @@ export class CacheService implements OnModuleInit, OnModuleDestroy {
    */
   getStats(): CacheStatsResponse {
     const uptime = Date.now() - this.stats.startTime.getTime();
-    const hitRate = (this.stats.hits + this.stats.misses) > 0 
-      ? ((this.stats.hits / (this.stats.hits + this.stats.misses)) * 100).toFixed(2)
-      : '0.00';
+    const hitRate =
+      this.stats.hits + this.stats.misses > 0
+        ? (
+            (this.stats.hits / (this.stats.hits + this.stats.misses)) *
+            100
+          ).toFixed(2)
+        : "0.00";
 
     return {
       ...this.stats,
@@ -117,7 +130,7 @@ export class CacheService implements OnModuleInit, OnModuleDestroy {
     try {
       const value = await this.cacheManager.get<T>(key);
       const duration = Date.now() - startTime;
-      
+
       if (value) {
         this.stats.hits++;
       } else {
@@ -140,7 +153,7 @@ export class CacheService implements OnModuleInit, OnModuleDestroy {
       const duration = Date.now() - startTime;
       this.stats.sets++;
     } catch (error) {
-        this.stats.errors++;
+      this.stats.errors++;
     }
   }
 
@@ -154,7 +167,7 @@ export class CacheService implements OnModuleInit, OnModuleDestroy {
       const duration = Date.now() - startTime;
       this.stats.deletes++;
     } catch (error) {
-        this.stats.errors++;
+      this.stats.errors++;
     }
   }
 
@@ -213,7 +226,7 @@ export class CacheService implements OnModuleInit, OnModuleDestroy {
           await store.clear();
         }
       }
-      
+
       // Reset statistics
       const oldStats = { ...this.stats };
       this.stats = {
@@ -224,10 +237,10 @@ export class CacheService implements OnModuleInit, OnModuleDestroy {
         errors: 0,
         startTime: new Date(),
       };
-      
+
       // Cache reset performed; stats were reset
     } catch (error) {
-        this.stats.errors++;
+      this.stats.errors++;
     }
   }
 

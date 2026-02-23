@@ -303,7 +303,7 @@ export class DashboardService {
         await this.whatsappSessionModel.countDocuments(baseQuery);
       const activeSessions = await this.whatsappSessionModel.countDocuments({
         ...baseQuery,
-      status: { $in: ["ready", "authenticated"] },
+        status: { $in: ["ready", "authenticated"] },
       });
 
       // Check recent message activity

@@ -14,16 +14,16 @@ import { CacheService } from "./cache.service";
     NestCacheModule.registerAsync<CacheModuleOptions>({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
-        const logger = new Logger('CacheModule');
+        const logger = new Logger("CacheModule");
         const url = configService.get<string>("redis.url");
         const enabled = configService.get<boolean>("redis.enabled");
         const defaultTtl = configService.get<number>("redis.defaultTtl") || 300;
 
         // Only keep connection logs; suppress other verbose configuration logs
-        
+
         if (!enabled || !url) {
           // Redis not configured - fallback to in-memory cache (no logs)
-          
+
           return {
             isGlobal: true,
             max: 100,
@@ -32,11 +32,11 @@ import { CacheService } from "./cache.service";
         }
 
         // Parse connection string to show details (without password)
-        const maskedUrl = url.includes('@') 
-          ? url.replace(/\/\/.*@/, '//*****@')
-          : url.replace(/\/\/[^:]+:[^@]+@/, '//*****:*****@');
+        const maskedUrl = url.includes("@")
+          ? url.replace(/\/\/.*@/, "//*****@")
+          : url.replace(/\/\/[^:]+:[^@]+@/, "//*****:*****@");
 
-        logger.log('✅ Redis ENABLED - Connecting to Redis...');
+        logger.log("✅ Redis ENABLED - Connecting to Redis...");
         logger.log(`Connection: ${maskedUrl}`);
 
         try {
@@ -45,12 +45,12 @@ import { CacheService } from "./cache.service";
             store: redisStore,
             url: url,
             socket: {
-              tls: url.startsWith('rediss://'),
+              tls: url.startsWith("rediss://"),
               reconnectStrategy: (retries: number) => {
                 if (retries > 10) {
-                  logger.error('❌ Redis connection failed after 10 retries');
-                  logger.warn('Falling back to in-memory cache');
-                  return new Error('Max retries reached');
+                  logger.error("❌ Redis connection failed after 10 retries");
+                  logger.warn("Falling back to in-memory cache");
+                  return new Error("Max retries reached");
                 }
                 const delay = Math.min(retries * 100, 3000);
                 logger.warn(`⚠️  Redis reconnecting... (attempt ${retries})`);
@@ -63,7 +63,7 @@ import { CacheService } from "./cache.service";
           return config;
         } catch (error) {
           logger.error(`❌ Failed to configure Redis: ${error.message}`);
-          logger.warn('Falling back to in-memory cache');
+          logger.warn("Falling back to in-memory cache");
           return {
             isGlobal: true,
             max: 100,

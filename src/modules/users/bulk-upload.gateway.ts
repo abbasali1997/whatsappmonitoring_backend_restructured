@@ -8,11 +8,7 @@ import {
 import { Logger } from "@nestjs/common";
 import { Server, Socket } from "socket.io";
 
-export type BulkUploadStatus =
-  | "queued"
-  | "running"
-  | "completed"
-  | "failed";
+export type BulkUploadStatus = "queued" | "running" | "completed" | "failed";
 
 export interface BulkUploadProgressPayload {
   jobId: string;
@@ -100,4 +96,3 @@ export class BulkUploadGateway {
     return `bulk-upload:${jobId}`;
   }
 }
-

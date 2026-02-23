@@ -306,9 +306,14 @@ export class UsersController {
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.TENANT_ADMIN)
   @RequireTenant()
   @ApiOperation({
-    summary: "Export a user's personal data and message history (LGPD/GDPR portability)",
+    summary:
+      "Export a user's personal data and message history (LGPD/GDPR portability)",
   })
-  @ApiQuery({ name: "includeMessages", required: false, description: "true/false" })
+  @ApiQuery({
+    name: "includeMessages",
+    required: false,
+    description: "true/false",
+  })
   @ApiQuery({
     name: "format",
     required: false,
@@ -319,7 +324,10 @@ export class UsersController {
     required: false,
     description: "Max number of messages to include (default 20000, max 50000)",
   })
-  @ApiResponse({ status: 200, description: "User export generated successfully" })
+  @ApiResponse({
+    status: 200,
+    description: "User export generated successfully",
+  })
   async exportUserData(
     @Param("id") id: string,
     @Request() req,
@@ -329,7 +337,9 @@ export class UsersController {
     @Res({ passthrough: true }) res?: Response,
   ) {
     const include =
-      includeMessages === undefined ? true : String(includeMessages).toLowerCase() !== "false";
+      includeMessages === undefined
+        ? true
+        : String(includeMessages).toLowerCase() !== "false";
     const limitNum = messageLimit ? Number(messageLimit) : undefined;
 
     const payload = await this.usersService.exportUserData({
@@ -337,7 +347,9 @@ export class UsersController {
       tenantId: req.user.tenantId,
       requestedBy: req.user.sub,
       includeMessages: include,
-      messageLimit: Number.isFinite(limitNum as any) ? (limitNum as number) : undefined,
+      messageLimit: Number.isFinite(limitNum as any)
+        ? (limitNum as number)
+        : undefined,
     });
 
     const filenameSafeId = String(id || "user").replace(/[^a-zA-Z0-9_-]/g, "");
@@ -581,10 +593,7 @@ export class UsersController {
     status: 200,
     description: "Invitation email queued successfully",
   })
-  async resendInvitation(
-    @Param("id") id: string,
-    @Request() req,
-  ) {
+  async resendInvitation(@Param("id") id: string, @Request() req) {
     await this.usersService.resendUserInvitation(id, req.user.tenantId);
     return { success: true };
   }

@@ -54,7 +54,10 @@ describe("RetentionCleanupService", () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         RetentionCleanupService,
-        { provide: getModelToken("WhatsAppSession"), useValue: mockSessionModel },
+        {
+          provide: getModelToken("WhatsAppSession"),
+          useValue: mockSessionModel,
+        },
         { provide: getModelToken("User"), useValue: mockUserModel },
         { provide: ConfigService, useValue: mockConfigService },
         { provide: SchedulerRegistry, useValue: mockScheduler },
@@ -107,7 +110,9 @@ describe("RetentionCleanupService", () => {
 
     service.onModuleInit();
 
-    expect(mockScheduler.deleteInterval).toHaveBeenCalledWith("retention-cleanup");
+    expect(mockScheduler.deleteInterval).toHaveBeenCalledWith(
+      "retention-cleanup",
+    );
     expect(mockScheduler.addInterval).toHaveBeenCalledWith(
       "retention-cleanup",
       intervalRef,
@@ -115,7 +120,9 @@ describe("RetentionCleanupService", () => {
     expect(intervalRef.unref).toHaveBeenCalled();
 
     service.onModuleDestroy();
-    expect(mockScheduler.deleteInterval).toHaveBeenCalledWith("retention-cleanup");
+    expect(mockScheduler.deleteInterval).toHaveBeenCalledWith(
+      "retention-cleanup",
+    );
 
     setIntervalSpy.mockRestore();
   });
@@ -129,7 +136,10 @@ describe("RetentionCleanupService", () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         RetentionCleanupService,
-        { provide: getModelToken("WhatsAppSession"), useValue: mockSessionModel },
+        {
+          provide: getModelToken("WhatsAppSession"),
+          useValue: mockSessionModel,
+        },
         { provide: getModelToken("User"), useValue: mockUserModel },
         { provide: ConfigService, useValue: mockConfigService },
         { provide: SchedulerRegistry, useValue: mockScheduler },

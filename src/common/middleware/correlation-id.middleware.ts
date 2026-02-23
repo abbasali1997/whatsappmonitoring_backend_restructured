@@ -21,8 +21,7 @@ export function correlationIdMiddleware(
     (req.headers["x-correlation-id"] as string | string[] | undefined) ||
     (req.headers["x-correlationid"] as string | string[] | undefined);
 
-  const incoming =
-    Array.isArray(headerValue) ? headerValue[0] : headerValue;
+  const incoming = Array.isArray(headerValue) ? headerValue[0] : headerValue;
 
   const correlationId = (incoming && String(incoming).trim()) || randomUUID();
   req.correlationId = correlationId;
@@ -46,5 +45,3 @@ export function correlationIdMiddleware(
   // Ensure the rest of the pipeline runs with baggage attached
   return context.with(ctxWithBaggage, () => next());
 }
-
-

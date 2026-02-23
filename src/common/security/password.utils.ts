@@ -21,4 +21,3 @@ export function isPasswordStrong(password: string): boolean {
   }
   return PASSWORD_COMPLEXITY_REGEX.test(password);
 }
-

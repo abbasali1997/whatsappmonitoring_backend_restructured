@@ -167,7 +167,7 @@ export class HealthService {
     const startTime = Date.now();
     try {
       const redisEnabled = this.configService.get<boolean>("redis.enabled");
-      
+
       // If Redis is not configured, cache service will use in-memory cache
       if (!redisEnabled) {
         return {
@@ -183,7 +183,7 @@ export class HealthService {
       // Test Redis connection by setting and getting a test value
       const testKey = "health:check:test";
       const testValue = Date.now().toString();
-      
+
       await this.cacheService.set(testKey, testValue, 10);
       const retrieved = await this.cacheService.get(testKey);
       await this.cacheService.del(testKey);
@@ -194,8 +194,10 @@ export class HealthService {
           responseTime: Date.now() - startTime,
           details: {
             type: "redis",
-            url: this.configService.get<string>("redis.url") || 
-                 this.configService.get<string>("redis.host") || "configured",
+            url:
+              this.configService.get<string>("redis.url") ||
+              this.configService.get<string>("redis.host") ||
+              "configured",
           },
         };
       } else {

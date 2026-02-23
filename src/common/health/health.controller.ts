@@ -27,7 +27,9 @@ export class HealthController {
   }
 
   @Get("live")
-  @ApiOperation({ summary: "Liveness probe endpoint (always 200 if process is running)" })
+  @ApiOperation({
+    summary: "Liveness probe endpoint (always 200 if process is running)",
+  })
   @ApiResponse({ status: 200, description: "Service process is alive" })
   live() {
     return { status: "ok", timestamp: new Date().toISOString() };
@@ -47,9 +49,15 @@ export class HealthController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.SYSTEM_ADMIN)
   @ApiOperation({ summary: "Get cache statistics" })
-  @ApiResponse({ status: 200, description: "Cache stats retrieved successfully" })
+  @ApiResponse({
+    status: 200,
+    description: "Cache stats retrieved successfully",
+  })
   @ApiResponse({ status: 403, description: "Forbidden" })
-  async getCacheStats(): Promise<{ timestamp: string; stats: CacheStatsResponse }>{
+  async getCacheStats(): Promise<{
+    timestamp: string;
+    stats: CacheStatsResponse;
+  }> {
     return {
       timestamp: new Date().toISOString(),
       stats: this.cacheService.getStats(),
@@ -61,7 +69,7 @@ export class HealthController {
   @Roles(UserRole.SYSTEM_ADMIN)
   @ApiOperation({ summary: "List cache keys by pattern (Redis only)" })
   @ApiResponse({ status: 200, description: "Cache keys retrieved" })
-  async listCacheKeys(@Query('pattern') pattern = 'refresh:token:*') {
+  async listCacheKeys(@Query("pattern") pattern = "refresh:token:*") {
     const keys = await this.cacheService.listKeys(pattern);
     return { pattern, keys };
   }

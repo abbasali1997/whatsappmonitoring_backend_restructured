@@ -219,7 +219,7 @@ UserSchema.index(
   },
 );
 UserSchema.index(
-  { email: 1, role: 1},
+  { email: 1, role: 1 },
   {
     unique: true,
     partialFilterExpression: { isActive: true },
