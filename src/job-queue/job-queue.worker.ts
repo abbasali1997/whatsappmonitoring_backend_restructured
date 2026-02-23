@@ -1,9 +1,10 @@
-import { Injectable, OnModuleDestroy } from "@nestjs/common";
+import { Injectable, Logger, OnModuleDestroy } from "@nestjs/common";
 import { Queue, Worker, Job } from "bullmq";
 import IORedis from "ioredis";
 
 @Injectable()
 export class JobQueueWorker implements OnModuleDestroy {
+  private readonly logger = new Logger(JobQueueWorker.name);
   private connection: IORedis;
   private queues: Map<string, Queue> = new Map();
   private workers: Map<string, Worker> = new Map();
@@ -39,18 +40,18 @@ export class JobQueueWorker implements OnModuleDestroy {
     );
 
     worker.on("completed", (job) => {
-      console.log(`Job ${job.name} completed`);
+      this.logger.log(`Job ${job.name} completed`);
     });
 
     worker.on("failed", (job, err) => {
-      console.error(`Job ${job?.name} failed:`, err);
+      this.logger.error(`Job ${job?.name} failed:`, err);
     });
 
     this.queues.set(queueName, queue);
     this.workers.set(queueName, worker);
   }
 
-  async destroyWorker(queueName: string): Promise<void> {
+  async destroyWorker(): Promise<void> {
     const keys = this.queues.keys();
     for (const key of keys) {
       if (this.queues.has(key)) {
