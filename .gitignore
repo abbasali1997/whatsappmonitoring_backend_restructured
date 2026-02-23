@@ -61,6 +61,11 @@ pnpm-lock.yaml
 # Build files
 *.tsbuildinfo
 
+# TypeScript artifacts
+*.js
+*.js.map
+*.d.ts
+
 # Certificates
 *.pem
 *.key

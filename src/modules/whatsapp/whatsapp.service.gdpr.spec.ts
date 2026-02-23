@@ -8,7 +8,7 @@ import { Message } from "../../common/schemas/message.schema";
 import { User } from "../../common/schemas/user.schema";
 import { EntitiesService } from "../entities/entities.service";
 import { StorageService } from "../storage/storage.service";
-import { WhatsAppQueueService } from "./whatsapp-queue.service";
+import { WhatsAppQueueService } from "../whatsapp-queue/whatsapp-queue.service";
 import { QrGateway } from "./qr.gateway";
 
 describe("WhatsAppService (LGPD/GDPR)", () => {
@@ -38,7 +38,10 @@ describe("WhatsAppService (LGPD/GDPR)", () => {
       providers: [
         WhatsAppService,
         { provide: getConnectionToken(), useValue: {} },
-        { provide: getModelToken(WhatsAppSession.name), useValue: mockSessionModel },
+        {
+          provide: getModelToken(WhatsAppSession.name),
+          useValue: mockSessionModel,
+        },
         { provide: getModelToken(Message.name), useValue: mockMessageModel },
         { provide: getModelToken(User.name), useValue: mockUserModel },
         { provide: ConfigService, useValue: mockConfigService },
@@ -141,7 +144,10 @@ describe("WhatsAppService (LGPD/GDPR)", () => {
       const userId = new Types.ObjectId().toString();
       const deletedBy = new Types.ObjectId().toString();
 
-      mockSessionModel.updateMany.mockResolvedValue({ matchedCount: 2, modifiedCount: 2 });
+      mockSessionModel.updateMany.mockResolvedValue({
+        matchedCount: 2,
+        modifiedCount: 2,
+      });
 
       await service.deactivateSessionsForDeletedUser(userId, deletedBy);
 
@@ -164,5 +170,3 @@ describe("WhatsAppService (LGPD/GDPR)", () => {
     });
   });
 });
-
-

@@ -3,7 +3,7 @@ import {
   WhatsAppQueueService,
   WhatsAppQueueEvent,
 } from "./whatsapp-queue.service";
-import { QueueService } from "../../common/messaging/queue.service";
+import { QueueService } from "@/common/messaging/queue.service";
 
 describe("WhatsAppQueueService", () => {
   let service: WhatsAppQueueService;

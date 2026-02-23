@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
-import { AppModule } from "../../../src/app.module";
+import { AppModule } from "@/apps/api/app.module";
 import { DatabaseHelpers } from "../../helpers/test-helpers";
 import { getModelToken } from "@nestjs/mongoose";
 import { User } from "../../../src/common/schemas/user.schema";

@@ -94,4 +94,3 @@ describe("WhatsAppService.disconnectSession", () => {
     expect(cleanupSpy).toHaveBeenCalledWith("s2");
   });
 });
-

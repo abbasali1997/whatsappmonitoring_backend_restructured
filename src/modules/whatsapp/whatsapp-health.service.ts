@@ -29,6 +29,7 @@ export class WhatsAppHealthService implements OnModuleInit, OnModuleDestroy {
   private readonly failureThreshold: number;
   private readonly alertCooldownMs: number;
   private readonly enabled: boolean;
+  private running = false;
 
   constructor(
     @InjectModel(WhatsAppSession.name)
@@ -73,13 +74,80 @@ export class WhatsAppHealthService implements OnModuleInit, OnModuleDestroy {
 
   onModuleDestroy() {
     if (!this.enabled) return;
-    const name = "whatsapp-health-check";
+    const name = "whatsapp-check";
     try {
       this.schedulerRegistry.deleteInterval(name);
       this.logger.log("[HealthCheckTick] Scheduler stopped");
     } catch {
       // ignore
     }
+  }
+
+  async runHealthChecks(): Promise<void> {
+    if (this.running) {
+      this.logger.warn(
+        "[HealthCheckTick] Previous run still in progress; skipping this tick",
+      );
+      return;
+    }
+
+    this.running = true;
+    const startedAt = Date.now();
+    const activeClientSessionIds =
+      this.whatsappService.listActiveClientSessionIds?.() || [];
+    const sessionOr: any[] = [
+      {
+        status: {
+          $in: [
+            SessionStatus.READY,
+            SessionStatus.AUTHENTICATED,
+            SessionStatus.FAILED,
+            SessionStatus.CONNECTING,
+          ],
+        },
+      },
+      // Previously connected sessions that got marked DISCONNECTED (e.g. during restarts)
+      // should still be health-checked so we can trigger reconnect/alerts.
+      {
+        status: SessionStatus.DISCONNECTED,
+        connectedAt: { $exists: true, $ne: null },
+      },
+    ];
+    if (activeClientSessionIds.length) {
+      // If a client exists in-memory, include it even if DB flags are stale.
+      sessionOr.push({ sessionId: { $in: activeClientSessionIds } });
+    }
+
+    const sessions = await this.sessionModel
+      .find({ $or: sessionOr })
+      .select(
+        "_id sessionId tenantId phoneNumber whatsappName status connectedAt lastHealthStatus consecutiveHealthFailures lastHealthAlertAt",
+      )
+      .lean();
+
+    if (!sessions.length) {
+      this.logger.debug(
+        `[HealthCheckTick] No eligible sessions found (activeClients=${activeClientSessionIds.length})`,
+      );
+      this.running = false;
+      return;
+    }
+
+    this.logger.log(
+      `[HealthCheckTick] Running health checks: sessions=${sessions.length}`,
+    );
+
+    for (const session of sessions) {
+      await this.checkSession(session, {
+        isPeriodic: true,
+      });
+    }
+
+    const durationMs = Date.now() - startedAt;
+    this.logger.log(
+      `[HealthCheckTick] Completed health checks: sessions=${sessions.length}, durationMs=${durationMs}`,
+    );
+    this.running = false;
   }
 
   /**

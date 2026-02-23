@@ -8,27 +8,28 @@ import { PassportModule } from "@nestjs/passport";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 
 // Configuration
-import { configuration } from "./config/configuration";
-import { validationSchema } from "./config/validation";
+import { configuration } from "../../config/configuration";
+import { validationSchema } from "../../config/validation";
 
 // Modules
-import { AuthModule } from "./modules/auth/auth.module";
-import { EntitiesModule } from "./modules/entities/entities.module";
-import { EntityTypesModule } from "./modules/entity-types/entity-types.module";
-import { UsersModule } from "./modules/users/users.module";
-import { EmailModule } from "./modules/email/email.module";
-import { WhatsAppModule } from "./modules/whatsapp/whatsapp.module";
-import { DashboardModule } from "./modules/dashboard/dashboard.module";
-import { StorageModule } from "./modules/storage/storage.module";
+import { AuthModule } from "@/modules/auth/auth.module";
+import { EntitiesModule } from "@/modules/entities/entities.module";
+import { EntityTypesModule } from "@/modules/entity-types/entity-types.module";
+import { UsersModule } from "@/modules/users/users.module";
+import { EmailModule } from "@/modules/email/email.module";
+import { WhatsAppModule } from "@/modules/whatsapp/whatsapp.module";
+import { DashboardModule } from "@/modules/dashboard/dashboard.module";
+import { StorageModule } from "@/modules/storage/storage.module";
 
 // Common
-import { DatabaseModule } from "./common/database/database.module";
-import { SecurityModule } from "./common/security/security.module";
-import { HealthModule } from "./common/health/health.module";
-import { CacheModule } from "./common/cache/cache.module";
-import { MessagingModule } from "./common/messaging/messaging.module";
-import { TelemetryInterceptor } from "./common/interceptors/telemetry.interceptor";
-import { RetentionCleanupModule } from "./common/cleanup/retention-cleanup.module";
+import { DatabaseModule } from "@/common/database/database.module";
+import { SecurityModule } from "@/common/security/security.module";
+import { HealthModule } from "@/common/health/health.module";
+import { CacheModule } from "@/common/cache/cache.module";
+import { MessagingModule } from "@/common/messaging/messaging.module";
+import { TelemetryInterceptor } from "@/common/interceptors/telemetry.interceptor";
+import { RetentionCleanupModule } from "@/common/cleanup/retention-cleanup.module";
+import { WhatsAppQueueModule } from "@/modules/whatsapp-queue/whatsapp-queue.module";
 
 @Module({
   imports: [
@@ -97,6 +98,7 @@ import { RetentionCleanupModule } from "./common/cleanup/retention-cleanup.modul
     UsersModule,
     EmailModule,
     WhatsAppModule,
+    WhatsAppQueueModule,
     DashboardModule,
     StorageModule,
   ],

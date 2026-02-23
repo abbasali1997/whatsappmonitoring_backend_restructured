@@ -1,15 +1,15 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 
-import { WhatsAppModule } from "../src/modules/whatsapp/whatsapp.module";
-import { DatabaseModule } from "../src/common/database/database.module";
-import { WhatsAppHealthWorker } from "./whatsapp-health/whatsapp-health.worker";
-import { JobQueueService } from "./job-queue/job-queue.service";
+import { WhatsAppModule } from "@/modules/whatsapp/whatsapp.module";
+import { DatabaseModule } from "@/common/database/database.module";
+import { WhatsappWorker } from "@/job-queue/whatsapp/whatsapp.worker";
+import { JobQueueWorker } from "@/job-queue/job-queue.worker";
 import { MongooseModule } from "@nestjs/mongoose";
-import { configuration } from "../src/config/configuration";
-import { validationSchema } from "../src/config/validation";
+import { configuration } from "@/config/configuration";
+import { validationSchema } from "@/config/validation";
 import { ScheduleModule } from "@nestjs/schedule";
-import { CacheModule } from "../src/common/cache/cache.module";
+import { CacheModule } from "@/common/cache/cache.module";
 
 @Module({
   imports: [
@@ -39,6 +39,6 @@ import { CacheModule } from "../src/common/cache/cache.module";
     WhatsAppModule,
     CacheModule,
   ],
-  providers: [WhatsAppHealthWorker, JobQueueService],
+  providers: [WhatsappWorker, JobQueueWorker],
 })
 export class WorkerModule {}

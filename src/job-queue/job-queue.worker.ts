@@ -3,7 +3,7 @@ import { Queue, Worker, Job } from "bullmq";
 import IORedis from "ioredis";
 
 @Injectable()
-export class JobQueueService implements OnModuleDestroy {
+export class JobQueueWorker implements OnModuleDestroy {
   private connection: IORedis;
   private queues: Map<string, Queue> = new Map();
   private workers: Map<string, Worker> = new Map();
@@ -51,8 +51,11 @@ export class JobQueueService implements OnModuleDestroy {
   }
 
   async destroyWorker(queueName: string): Promise<void> {
-    if (this.queues.has(queueName)) {
-      this.queues.delete(queueName);
+    const keys = this.queues.keys();
+    for (const key of keys) {
+      if (this.queues.has(key)) {
+        this.queues.delete(key);
+      }
     }
   }
 

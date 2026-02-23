@@ -3,8 +3,6 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { WhatsAppService } from "./whatsapp.service";
 import { WhatsAppController } from "./whatsapp.controller";
 import { PublicWhatsAppController } from "./public-whatsapp.controller";
-import { WhatsAppQueueService } from "./whatsapp-queue.service";
-import { WhatsAppQueueProcessor } from "./whatsapp-queue.processor";
 import {
   WhatsAppSession,
   WhatsAppSessionSchema,
@@ -17,6 +15,7 @@ import { StorageModule } from "../storage/storage.module";
 import { EmailModule } from "../email/email.module";
 import { QrGateway } from "./qr.gateway";
 import { WhatsAppHealthService } from "./whatsapp-health.service";
+import { WhatsAppQueueModule } from "@/modules/whatsapp-queue/whatsapp-queue.module";
 
 @Module({
   imports: [
@@ -27,17 +26,12 @@ import { WhatsAppHealthService } from "./whatsapp-health.service";
     ]),
     forwardRef(() => UsersModule),
     forwardRef(() => EntitiesModule),
+    forwardRef(() => WhatsAppQueueModule),
     StorageModule,
     EmailModule,
   ],
   controllers: [WhatsAppController, PublicWhatsAppController],
-  providers: [
-    WhatsAppService,
-    WhatsAppQueueService,
-    WhatsAppQueueProcessor,
-    QrGateway,
-    WhatsAppHealthService,
-  ],
-  exports: [WhatsAppService, WhatsAppQueueService, WhatsAppHealthService],
+  providers: [WhatsAppService, QrGateway, WhatsAppHealthService],
+  exports: [WhatsAppService, WhatsAppHealthService],
 })
 export class WhatsAppModule {}

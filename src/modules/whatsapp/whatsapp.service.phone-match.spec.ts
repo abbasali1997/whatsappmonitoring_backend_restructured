@@ -8,10 +8,13 @@ import {
   SessionStatus,
 } from "../../common/schemas/whatsapp-session.schema";
 import { Message } from "../../common/schemas/message.schema";
-import { User, WhatsAppConnectionStatus } from "../../common/schemas/user.schema";
+import {
+  User,
+  WhatsAppConnectionStatus,
+} from "../../common/schemas/user.schema";
 import { EntitiesService } from "../entities/entities.service";
 import { StorageService } from "../storage/storage.service";
-import { WhatsAppQueueService } from "./whatsapp-queue.service";
+import { WhatsAppQueueService } from "../whatsapp-queue/whatsapp-queue.service";
 import { QrGateway } from "./qr.gateway";
 
 describe("WhatsAppService (phone match enforcement)", () => {
@@ -45,7 +48,10 @@ describe("WhatsAppService (phone match enforcement)", () => {
       providers: [
         WhatsAppService,
         { provide: getConnectionToken(), useValue: {} },
-        { provide: getModelToken(WhatsAppSession.name), useValue: mockSessionModel },
+        {
+          provide: getModelToken(WhatsAppSession.name),
+          useValue: mockSessionModel,
+        },
         { provide: getModelToken(Message.name), useValue: mockMessageModel },
         { provide: getModelToken(User.name), useValue: mockUserModel },
         { provide: ConfigService, useValue: mockConfigService },
@@ -112,7 +118,9 @@ describe("WhatsAppService (phone match enforcement)", () => {
       }),
     );
 
-    expect(disconnectSpy).toHaveBeenCalledWith(sessionId, { preserveStatus: true });
+    expect(disconnectSpy).toHaveBeenCalledWith(sessionId, {
+      preserveStatus: true,
+    });
 
     expect(mockClient.logout).toHaveBeenCalled();
 
@@ -122,5 +130,3 @@ describe("WhatsAppService (phone match enforcement)", () => {
     );
   });
 });
-
-

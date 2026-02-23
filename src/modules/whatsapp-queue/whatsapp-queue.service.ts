@@ -1,5 +1,5 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { QueueService } from "../../common/messaging/queue.service";
+import { QueueService } from "@/common/messaging/queue.service";
 
 export const WHATSAPP_QUEUE_NAME = "whatsapp-queue";
 

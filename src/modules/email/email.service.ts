@@ -26,7 +26,8 @@ const getHealthAlertCopy = (language: string, companyName: string) => {
       greeting: "Olá",
       intro: `Detectamos um problema com uma sessão do WhatsApp vinculada à sua conta na ${companyName}. Sua sessão do WhatsApp pode não estar funcionando corretamente e requer atenção imediata.`,
       alertTitle: "⚠️ Problema Detectado",
-      alertMessage: "Sua sessão do WhatsApp falhou em várias verificações de saúde consecutivas. Isso pode significar que sua conta foi desconectada, bloqueada ou está enfrentando problemas de conectividade.",
+      alertMessage:
+        "Sua sessão do WhatsApp falhou em várias verificações de saúde consecutivas. Isso pode significar que sua conta foi desconectada, bloqueada ou está enfrentando problemas de conectividade.",
       detailsTitle: "Detalhes da Sessão",
       sessionLabel: "ID da Sessão",
       phoneLabel: "Número de Telefone",
@@ -35,11 +36,14 @@ const getHealthAlertCopy = (language: string, companyName: string) => {
       failuresLabel: "Falhas Consecutivas",
       reasonLabel: "Motivo do Erro",
       actionTitle: "Ações Recomendadas",
-      action1: "Faça login no painel para verificar o status da sua sessão do WhatsApp",
+      action1:
+        "Faça login no painel para verificar o status da sua sessão do WhatsApp",
       action2: "Reconecte sua conta do WhatsApp se necessário",
-      action3: "Verifique se sua conta do WhatsApp não foi bloqueada ou suspensa",
+      action3:
+        "Verifique se sua conta do WhatsApp não foi bloqueada ou suspensa",
       buttonLabel: "Acessar Painel",
-      supportText: "Se você precisar de ajuda ou tiver dúvidas, nossa equipe de suporte está disponível para ajudá-lo.",
+      supportText:
+        "Se você precisar de ajuda ou tiver dúvidas, nossa equipe de suporte está disponível para ajudá-lo.",
       footerText: "Atenciosamente,",
       team: `Equipe ${companyName}`,
     };
@@ -52,7 +56,8 @@ const getHealthAlertCopy = (language: string, companyName: string) => {
       greeting: "Hola",
       intro: `Detectamos un problema con una sesión de WhatsApp vinculada a su cuenta en ${companyName}. Su sesión de WhatsApp puede no estar funcionando correctamente y requiere atención inmediata.`,
       alertTitle: "⚠️ Problema Detectado",
-      alertMessage: "Su sesión de WhatsApp ha fallado en varias verificaciones de salud consecutivas. Esto puede significar que su cuenta ha sido desconectada, bloqueada o está experimentando problemas de conectividad.",
+      alertMessage:
+        "Su sesión de WhatsApp ha fallado en varias verificaciones de salud consecutivas. Esto puede significar que su cuenta ha sido desconectada, bloqueada o está experimentando problemas de conectividad.",
       detailsTitle: "Detalles de la Sesión",
       sessionLabel: "ID de Sesión",
       phoneLabel: "Número de Teléfono",
@@ -61,11 +66,14 @@ const getHealthAlertCopy = (language: string, companyName: string) => {
       failuresLabel: "Fallos Consecutivos",
       reasonLabel: "Motivo del Error",
       actionTitle: "Acciones Recomendadas",
-      action1: "Inicie sesión en el panel para verificar el estado de su sesión de WhatsApp",
+      action1:
+        "Inicie sesión en el panel para verificar el estado de su sesión de WhatsApp",
       action2: "Reconecte su cuenta de WhatsApp si es necesario",
-      action3: "Verifique si su cuenta de WhatsApp no ha sido bloqueada o suspendida",
+      action3:
+        "Verifique si su cuenta de WhatsApp no ha sido bloqueada o suspendida",
       buttonLabel: "Acceder al Panel",
-      supportText: "Si necesita ayuda o tiene preguntas, nuestro equipo de soporte está disponible para ayudarle.",
+      supportText:
+        "Si necesita ayuda o tiene preguntas, nuestro equipo de soporte está disponible para ayudarle.",
       footerText: "Atentamente,",
       team: `Equipo ${companyName}`,
     };
@@ -78,7 +86,8 @@ const getHealthAlertCopy = (language: string, companyName: string) => {
       greeting: "Bonjour",
       intro: `Nous avons détecté un problème avec une session WhatsApp liée à votre compte sur ${companyName}. Votre session WhatsApp peut ne pas fonctionner correctement et nécessite une attention immédiate.`,
       alertTitle: "⚠️ Problème Détecté",
-      alertMessage: "Votre session WhatsApp a échoué à plusieurs vérifications de santé consécutives. Cela peut signifier que votre compte a été déconnecté, bloqué ou rencontre des problèmes de connectivité.",
+      alertMessage:
+        "Votre session WhatsApp a échoué à plusieurs vérifications de santé consécutives. Cela peut signifier que votre compte a été déconnecté, bloqué ou rencontre des problèmes de connectivité.",
       detailsTitle: "Détails de la Session",
       sessionLabel: "ID de Session",
       phoneLabel: "Numéro de Téléphone",
@@ -87,11 +96,14 @@ const getHealthAlertCopy = (language: string, companyName: string) => {
       failuresLabel: "Échecs Consécutifs",
       reasonLabel: "Raison de l'Erreur",
       actionTitle: "Actions Recommandées",
-      action1: "Connectez-vous au tableau de bord pour vérifier l'état de votre session WhatsApp",
+      action1:
+        "Connectez-vous au tableau de bord pour vérifier l'état de votre session WhatsApp",
       action2: "Reconnectez votre compte WhatsApp si nécessaire",
-      action3: "Vérifiez si votre compte WhatsApp n'a pas été bloqué ou suspendu",
+      action3:
+        "Vérifiez si votre compte WhatsApp n'a pas été bloqué ou suspendu",
       buttonLabel: "Accéder au Tableau de Bord",
-      supportText: "Si vous avez besoin d'aide ou avez des questions, notre équipe de support est disponible pour vous aider.",
+      supportText:
+        "Si vous avez besoin d'aide ou avez des questions, notre équipe de support est disponible pour vous aider.",
       footerText: "Cordialement,",
       team: `Équipe ${companyName}`,
     };
@@ -104,7 +116,8 @@ const getHealthAlertCopy = (language: string, companyName: string) => {
       greeting: "Hallo",
       intro: `Wir haben ein Problem mit einer WhatsApp-Sitzung festgestellt, die mit Ihrem Konto auf ${companyName} verknüpft ist. Ihre WhatsApp-Sitzung funktioniert möglicherweise nicht ordnungsgemäß und erfordert sofortige Aufmerksamkeit.`,
       alertTitle: "⚠️ Problem Erkannt",
-      alertMessage: "Ihre WhatsApp-Sitzung ist bei mehreren aufeinanderfolgenden Gesundheitsprüfungen fehlgeschlagen. Dies kann bedeuten, dass Ihr Konto getrennt, blockiert wurde oder Verbindungsprobleme aufweist.",
+      alertMessage:
+        "Ihre WhatsApp-Sitzung ist bei mehreren aufeinanderfolgenden Gesundheitsprüfungen fehlgeschlagen. Dies kann bedeuten, dass Ihr Konto getrennt, blockiert wurde oder Verbindungsprobleme aufweist.",
       detailsTitle: "Sitzungsdetails",
       sessionLabel: "Sitzungs-ID",
       phoneLabel: "Telefonnummer",
@@ -113,11 +126,14 @@ const getHealthAlertCopy = (language: string, companyName: string) => {
       failuresLabel: "Aufeinanderfolgende Fehler",
       reasonLabel: "Fehlergrund",
       actionTitle: "Empfohlene Maßnahmen",
-      action1: "Melden Sie sich im Dashboard an, um den Status Ihrer WhatsApp-Sitzung zu überprüfen",
+      action1:
+        "Melden Sie sich im Dashboard an, um den Status Ihrer WhatsApp-Sitzung zu überprüfen",
       action2: "Verbinden Sie Ihr WhatsApp-Konto bei Bedarf erneut",
-      action3: "Überprüfen Sie, ob Ihr WhatsApp-Konto nicht blockiert oder gesperrt wurde",
+      action3:
+        "Überprüfen Sie, ob Ihr WhatsApp-Konto nicht blockiert oder gesperrt wurde",
       buttonLabel: "Zum Dashboard",
-      supportText: "Wenn Sie Hilfe benötigen oder Fragen haben, steht Ihnen unser Support-Team zur Verfügung.",
+      supportText:
+        "Wenn Sie Hilfe benötigen oder Fragen haben, steht Ihnen unser Support-Team zur Verfügung.",
       footerText: "Mit freundlichen Grüßen,",
       team: `${companyName}-Team`,
     };
@@ -130,7 +146,8 @@ const getHealthAlertCopy = (language: string, companyName: string) => {
     greeting: "Hello",
     intro: `We detected an issue with a WhatsApp session linked to your account on ${companyName}. Your WhatsApp session may not be functioning properly and requires immediate attention.`,
     alertTitle: "⚠️ Issue Detected",
-    alertMessage: "Your WhatsApp session has failed multiple consecutive health checks. This may mean your account has been disconnected, blocked, or is experiencing connectivity issues.",
+    alertMessage:
+      "Your WhatsApp session has failed multiple consecutive health checks. This may mean your account has been disconnected, blocked, or is experiencing connectivity issues.",
     detailsTitle: "Session Details",
     sessionLabel: "Session ID",
     phoneLabel: "Phone Number",
@@ -141,9 +158,11 @@ const getHealthAlertCopy = (language: string, companyName: string) => {
     actionTitle: "Recommended Actions",
     action1: "Log in to the dashboard to check your WhatsApp session status",
     action2: "Reconnect your WhatsApp account if necessary",
-    action3: "Verify that your WhatsApp account has not been blocked or suspended",
+    action3:
+      "Verify that your WhatsApp account has not been blocked or suspended",
     buttonLabel: "Access Dashboard",
-    supportText: "If you need assistance or have any questions, our support team is available to help you.",
+    supportText:
+      "If you need assistance or have any questions, our support team is available to help you.",
     footerText: "Best regards,",
     team: `${companyName} Team`,
   };
@@ -156,15 +175,15 @@ const getUserInvitationCopy = (language: string, companyName: string) => {
     return {
       subject: `Bem-vindo à ${companyName} - Conecte seu WhatsApp`,
       greeting: "Olá",
-      invitationIntro:
-        `Você foi convidado(a) para acessar a plataforma ${companyName}. Clique no botão abaixo para abrir um QR Code ativo do WhatsApp quando estiver pronto(a) para conectar.`,
+      invitationIntro: `Você foi convidado(a) para acessar a plataforma ${companyName}. Clique no botão abaixo para abrir um QR Code ativo do WhatsApp quando estiver pronto(a) para conectar.`,
       buttonLabel: "Abrir QR Code em tempo real",
       buttonHelpText:
         "Um novo QR Code será gerado assim que você abrir este link. Use-o imediatamente antes que ele expire.",
       instructionsTitle: "Instruções",
       instruction1: "Abra o WhatsApp no seu celular",
       instruction2: "Toque em Menu ou Configurações e selecione WhatsApp Web",
-      instruction3: "Aponte a câmera do celular para esta tela para capturar o QR Code",
+      instruction3:
+        "Aponte a câmera do celular para esta tela para capturar o QR Code",
       instruction4: "Sua conta do WhatsApp será conectada automaticamente",
       warningTitle: "Observações importantes",
       warning1: "Este QR Code é válido por apenas 1 minuto",
@@ -178,8 +197,7 @@ const getUserInvitationCopy = (language: string, companyName: string) => {
   return {
     subject: `Welcome to ${companyName} - Connect Your WhatsApp`,
     greeting: "Hi",
-    invitationIntro:
-      `You've been invited to join the ${companyName} platform. Click the button below to open a live WhatsApp QR code whenever you're ready to connect.`,
+    invitationIntro: `You've been invited to join the ${companyName} platform. Click the button below to open a live WhatsApp QR code whenever you're ready to connect.`,
     buttonLabel: "Open Live QR Code",
     buttonHelpText:
       "A new QR code will be generated the moment you open this link. Use it right away before it expires.",
@@ -205,8 +223,7 @@ const getManagerInvitationCopy = (language: string, companyName: string) => {
       subject: `Bem-vindo à ${companyName} - Acesso de Gerente`,
       emailTitle: `Convite de Acesso de Gerente - ${companyName}`,
       greeting: "Olá",
-      intro:
-        `Você recebeu acesso de Gerente à plataforma ${companyName}. Use as credenciais abaixo para entrar na sua conta.`,
+      intro: `Você recebeu acesso de Gerente à plataforma ${companyName}. Use as credenciais abaixo para entrar na sua conta.`,
       credentialsTitle: "Suas credenciais de acesso",
       labelEmail: "Email:",
       labelTempPassword: "Senha temporária:",
@@ -217,7 +234,8 @@ const getManagerInvitationCopy = (language: string, companyName: string) => {
         "Para sua segurança, altere sua senha temporária imediatamente após o primeiro login. Esta senha expirará em 7 dias.",
       helpText:
         "Se você tiver dúvidas ou precisar de ajuda, entre em contato com nossa equipe de suporte.",
-      footerNeedHelp: "Precisa de ajuda? Entre em contato com nossa equipe de suporte:",
+      footerNeedHelp:
+        "Precisa de ajuda? Entre em contato com nossa equipe de suporte:",
       websiteLabel: "Site",
       linkedinLabel: "LinkedIn",
       twitterLabel: "Twitter",
@@ -229,8 +247,7 @@ const getManagerInvitationCopy = (language: string, companyName: string) => {
       subject: `Bienvenido a ${companyName} - Acceso de Manager`,
       emailTitle: `Invitación de acceso de Manager - ${companyName}`,
       greeting: "Hola",
-      intro:
-        `Se le ha concedido acceso de Manager a la plataforma ${companyName}. Use las credenciales a continuación para iniciar sesión.`,
+      intro: `Se le ha concedido acceso de Manager a la plataforma ${companyName}. Use las credenciales a continuación para iniciar sesión.`,
       credentialsTitle: "Sus credenciales de acceso",
       labelEmail: "Correo:",
       labelTempPassword: "Contraseña temporal:",
@@ -241,7 +258,8 @@ const getManagerInvitationCopy = (language: string, companyName: string) => {
         "Por su seguridad, cambie su contraseña temporal inmediatamente después del primer inicio de sesión. Esta contraseña expirará en 7 días.",
       helpText:
         "Si tiene preguntas o necesita ayuda, póngase en contacto con nuestro equipo de soporte.",
-      footerNeedHelp: "¿Necesita ayuda? Contacte con nuestro equipo de soporte:",
+      footerNeedHelp:
+        "¿Necesita ayuda? Contacte con nuestro equipo de soporte:",
       websiteLabel: "Sitio web",
       linkedinLabel: "LinkedIn",
       twitterLabel: "Twitter",
@@ -253,8 +271,7 @@ const getManagerInvitationCopy = (language: string, companyName: string) => {
       subject: `Bienvenue sur ${companyName} - Accès Manager`,
       emailTitle: `Invitation d'accès Manager - ${companyName}`,
       greeting: "Bonjour",
-      intro:
-        `Vous avez reçu un accès Manager à la plateforme ${companyName}. Utilisez les identifiants ci-dessous pour vous connecter.`,
+      intro: `Vous avez reçu un accès Manager à la plateforme ${companyName}. Utilisez les identifiants ci-dessous pour vous connecter.`,
       credentialsTitle: "Vos identifiants de connexion",
       labelEmail: "Email :",
       labelTempPassword: "Mot de passe temporaire :",
@@ -277,8 +294,7 @@ const getManagerInvitationCopy = (language: string, companyName: string) => {
       subject: `Willkommen bei ${companyName} - Manager-Zugang`,
       emailTitle: `Einladung zum Manager-Zugang - ${companyName}`,
       greeting: "Hallo",
-      intro:
-        `Ihnen wurde Manager-Zugang zur Plattform ${companyName} gewährt. Verwenden Sie die folgenden Zugangsdaten, um sich anzumelden.`,
+      intro: `Ihnen wurde Manager-Zugang zur Plattform ${companyName} gewährt. Verwenden Sie die folgenden Zugangsdaten, um sich anzumelden.`,
       credentialsTitle: "Ihre Zugangsdaten",
       labelEmail: "E-Mail:",
       labelTempPassword: "Temporäres Passwort:",
@@ -289,7 +305,8 @@ const getManagerInvitationCopy = (language: string, companyName: string) => {
         "Bitte ändern Sie Ihr temporäres Passwort unmittelbar nach der ersten Anmeldung. Dieses Passwort läuft in 7 Tagen ab.",
       helpText:
         "Wenn Sie Fragen haben oder Hilfe benötigen, wenden Sie sich bitte an unser Support-Team.",
-      footerNeedHelp: "Brauchen Sie Hilfe? Kontaktieren Sie unser Support-Team:",
+      footerNeedHelp:
+        "Brauchen Sie Hilfe? Kontaktieren Sie unser Support-Team:",
       websiteLabel: "Website",
       linkedinLabel: "LinkedIn",
       twitterLabel: "Twitter",
@@ -300,8 +317,7 @@ const getManagerInvitationCopy = (language: string, companyName: string) => {
     subject: `Welcome to ${companyName} - Manager Access`,
     emailTitle: `Manager Access Invitation - ${companyName}`,
     greeting: "Hi",
-    intro:
-      `You've been granted Manager access to the ${companyName} platform. Use the credentials below to log in to your account.`,
+    intro: `You've been granted Manager access to the ${companyName} platform. Use the credentials below to log in to your account.`,
     credentialsTitle: "Your Login Credentials",
     labelEmail: "Email:",
     labelTempPassword: "Temporary Password:",
@@ -330,7 +346,8 @@ const getPasswordResetCopy = (language: string, companyName: string) => {
         "Recebemos uma solicitação para redefinir a senha da sua conta {{companyName}}. Se você não fez essa solicitação, ignore este email.",
       buttonLabel: "Redefinir senha",
       importantTitle: "Importante",
-      importantText: "Este link para redefinir a senha expirará em {{expiryHours}} hora(s).",
+      importantText:
+        "Este link para redefinir a senha expirará em {{expiryHours}} hora(s).",
       securityTitle: "Dicas de segurança",
       securityItem1: "Nunca compartilhe sua senha com ninguém",
       securityItem2:
@@ -391,8 +408,7 @@ const getEmailVerificationCopy = (language: string, companyName: string) => {
         "Se você não solicitou esta alteração de email, ignore esta mensagem",
       securityItem2:
         "Nunca compartilhe links de verificação com outras pessoas",
-      securityItem3:
-        "Mantenha sua conta segura usando uma senha forte e única",
+      securityItem3: "Mantenha sua conta segura usando uma senha forte e única",
       linkHelp:
         "Se você tiver problemas para clicar no botão, copie e cole esta URL no seu navegador:",
       supportText:
@@ -466,16 +482,15 @@ export class EmailService {
       process.env.NODE_ENV ||
       "development";
     const baseUrl =
-      this.configService.get<string>("app.baseUrl") ||
-      "http://localhost:3000";
+      this.configService.get<string>("app.baseUrl") || "http://localhost:3000";
     const isTestEnv =
       nodeEnv === "test" ||
       typeof (process as any).env.JEST_WORKER_ID !== "undefined";
     return (
       !isTestEnv &&
       (nodeEnv === "development" ||
-      baseUrl.includes("localhost") ||
-      baseUrl.includes("127.0.0.1"))
+        baseUrl.includes("localhost") ||
+        baseUrl.includes("127.0.0.1"))
     );
   }
 
@@ -1053,7 +1068,7 @@ export class EmailService {
         "en";
       const copy = getHealthAlertCopy(languageCode, companyName);
 
-      const template = await this.loadTemplate("whatsapp-health-alert");
+      const template = await this.loadTemplate("whatsapp-alert");
       const templateData = {
         ...copy,
         companyName,

@@ -5,11 +5,8 @@ import {
   OnModuleInit,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import {
-  QueueMessage,
-  QueueService,
-} from "../../common/messaging/queue.service";
-import { WhatsAppService } from "./whatsapp.service";
+import { QueueMessage, QueueService } from "@/common/messaging/queue.service";
+import { WhatsAppService } from "../whatsapp/whatsapp.service";
 import {
   WHATSAPP_QUEUE_NAME,
   WhatsAppQueueEvent,
@@ -30,8 +27,14 @@ export class WhatsAppQueueProcessor implements OnModuleInit, OnModuleDestroy {
    * @returns true if running on localhost, false otherwise
    */
   private isLocalhost(): boolean {
-    const nodeEnv = this.configService.get<string>("app.nodeEnv", "development");
-    const baseUrl = this.configService.get<string>("app.baseUrl", "http://localhost:3000");
+    const nodeEnv = this.configService.get<string>(
+      "app.nodeEnv",
+      "development",
+    );
+    const baseUrl = this.configService.get<string>(
+      "app.baseUrl",
+      "http://localhost:3000",
+    );
     return (
       nodeEnv === "development" ||
       baseUrl.includes("localhost") ||

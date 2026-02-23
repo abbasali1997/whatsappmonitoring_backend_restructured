@@ -33,7 +33,7 @@ import { execFile } from "child_process";
 import { promisify } from "util";
 import { EntitiesService } from "../entities/entities.service";
 import { StorageService } from "../storage/storage.service";
-import { WhatsAppQueueService } from "./whatsapp-queue.service";
+import { WhatsAppQueueService } from "../whatsapp-queue/whatsapp-queue.service";
 import { QrGateway } from "./qr.gateway";
 import { recordWhatsAppAlertEvent } from "../../telemetry";
 
@@ -59,8 +59,8 @@ export class WhatsAppService implements OnModuleInit, OnModuleDestroy {
   // Timer for periodic idle client cleanup
   private idleCleanupTimer: NodeJS.Timeout | null = null;
   // Timer for periodic reconnect sweeps in multi-pod setups
-  private reconnectSweepTimer: NodeJS.Timeout | null = null;
-  private reconnectSweepInProgress = false;
+  // private reconnectSweepTimer: NodeJS.Timeout | null = null;
+  // private reconnectSweepInProgress = false;
   // Idle timeout for non-connected sessions (default: 5 minutes)
   private readonly idleSessionTimeoutMs =
     (Number(process.env.WHATSAPP_IDLE_SESSION_TIMEOUT_MS) || 5) * 60 * 1000;
@@ -761,8 +761,6 @@ export class WhatsAppService implements OnModuleInit, OnModuleDestroy {
 
     // Start periodic cleanup of idle (non-connected) clients to save memory
     this.startIdleClientCleanup();
-    // Periodically re-attempt reconnects in case a pod died holding the lock
-    this.startReconnectSweep();
   }
 
   async onModuleDestroy() {
@@ -771,10 +769,6 @@ export class WhatsAppService implements OnModuleInit, OnModuleDestroy {
     if (this.idleCleanupTimer) {
       clearInterval(this.idleCleanupTimer);
       this.idleCleanupTimer = null;
-    }
-    if (this.reconnectSweepTimer) {
-      clearInterval(this.reconnectSweepTimer);
-      this.reconnectSweepTimer = null;
     }
 
     for (const [sessionId] of this.clients.entries()) {
@@ -805,47 +799,16 @@ export class WhatsAppService implements OnModuleInit, OnModuleDestroy {
     }, this.idleCleanupIntervalMs);
   }
 
-  private getReconnectSweepIntervalMs(): number {
-    return (
-      Number(
-        this.configService.get<string>(
-          "whatsapp.reconnectSweepIntervalMs",
-          process.env.WHATSAPP_RECONNECT_SWEEP_INTERVAL_MS || "120000",
-        ),
-      ) || 120000
-    );
-  }
-
-  /**
-   * Periodically attempt to reconnect active sessions in case a pod terminated
-   * while holding the session lock. This allows other pods to take over once
-   * the lock expires.
-   */
-  private startReconnectSweep(): void {
-    if (this.reconnectSweepTimer) {
-      return;
-    }
-    const intervalMs = this.getReconnectSweepIntervalMs();
-    this.logger.log(
-      `Starting WhatsApp reconnect sweep: interval=${intervalMs}ms`,
-    );
-    this.reconnectSweepTimer = setInterval(() => {
-      if (this.reconnectSweepInProgress) {
-        return;
-      }
-      this.reconnectSweepInProgress = true;
-      this.reconnectActiveSessions()
-        .catch((error) => {
-          this.logger.error(
-            `Error during WhatsApp reconnect sweep: ${error.message}`,
-            error,
-          );
-        })
-        .finally(() => {
-          this.reconnectSweepInProgress = false;
-        });
-    }, intervalMs);
-  }
+  // private getReconnectSweepIntervalMs(): number {
+  //   return (
+  //     Number(
+  //       this.configService.get<string>(
+  //         "whatsapp.reconnectSweepIntervalMs",
+  //         process.env.WHATSAPP_RECONNECT_SWEEP_INTERVAL_MS || "120000",
+  //       ),
+  //     ) || 120000
+  //   );
+  // }
 
   /**
    * Close idle Puppeteer/WhatsApp clients to free memory.
@@ -3449,7 +3412,7 @@ export class WhatsAppService implements OnModuleInit, OnModuleDestroy {
     this.qrGateway.emitStatus(sessionId, { status, message });
   }
 
-  private async reconnectActiveSessions(): Promise<void> {
+  async reconnectActiveSessions(): Promise<void> {
     this.logger.debug(`[SERVICE] Starting reconnect of active sessions`);
     const activeSessions = await this.sessionModel.find({
       // IMPORTANT: do NOT depend on WhatsAppSession.isActive for reconnection.
