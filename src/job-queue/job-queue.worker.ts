@@ -87,7 +87,7 @@ export class JobQueueWorker implements OnModuleDestroy {
 
     await queue.add(jobName, data, {
       repeat: {
-        pattern: cronExpression, // cron syntax
+        pattern: cronExpression,
       },
       removeOnComplete: true,
       removeOnFail: false,

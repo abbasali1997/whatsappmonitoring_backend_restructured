@@ -110,15 +110,14 @@ export class WhatsappWorker implements OnModuleInit, OnModuleDestroy {
     );
 
     this.logger.log(
-      `[ReconnectSweepTick] Scheduler started: interval = 5 minutes`,
+      `[ReconnectSweepTick] Scheduler started: interval = 2 minutes`,
     );
   }
 
   async onModuleDestroy() {
     if (!this.ENABLED) return;
     try {
-      await this.jobQueueService.destroyWorker(this.RECONNECT_QUEUE);
-      await this.jobQueueService.destroyWorker(this.HEALTH_QUEUE);
+      await this.jobQueueService.destroyWorker();
       this.logger.log("[HealthCheckTick] Scheduler stopped");
     } catch {
       // ignore
