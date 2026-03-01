@@ -25,8 +25,8 @@ stages:
         containerRegistry: 'unicx-acr-prod'
         repository: '$(imageName)'
         command: 'buildAndPush'
-        Dockerfile: 'backend_restructured/Dockerfile'
-        buildContext: 'backend_restructured'
+        Dockerfile: 'Dockerfile'
+        buildContext: '.'
         tags: |
           $(tag)
           latest
@@ -53,7 +53,7 @@ stages:
               connectionType: 'kubernetesServiceConnection'
               kubernetesServiceConnection: 'unicx-aks-prod'
               namespace: '$(kubernetesNamespace)'
-              manifests: 'backend_restructured/k8s-v2/secretproviderclass.yaml'
+              manifests: 'k8s-v2/secretproviderclass.yaml'
 
           - task: KubernetesManifest@1
             displayName: 'Apply PodDisruptionBudget'
@@ -62,7 +62,7 @@ stages:
               connectionType: 'kubernetesServiceConnection'
               kubernetesServiceConnection: 'unicx-aks-prod'
               namespace: '$(kubernetesNamespace)'
-              manifests: 'backend_restructured/k8s-v2/pdb.yaml'
+              manifests: 'k8s-v2/pdb.yaml'
 
           - task: KubernetesManifest@1
             displayName: 'Deploy API and Worker'
@@ -72,8 +72,8 @@ stages:
               kubernetesServiceConnection: 'unicx-aks-prod'
               namespace: '$(kubernetesNamespace)'
               manifests: |
-                backend_restructured/k8s-v2/deployment-api.yaml
-                backend_restructured/k8s-v2/deployment-worker.yaml
+                k8s-v2/deployment-api.yaml
+                k8s-v2/deployment-worker.yaml
               containers: '$(acrLoginServer)/$(imageName):$(tag)'
 
           - task: KubernetesManifest@1
@@ -83,4 +83,4 @@ stages:
               connectionType: 'kubernetesServiceConnection'
               kubernetesServiceConnection: 'unicx-aks-prod'
               namespace: '$(kubernetesNamespace)'
-              manifests: 'backend_restructured/k8s-v2/service.yaml'
+              manifests: 'k8s-v2/service.yaml'
