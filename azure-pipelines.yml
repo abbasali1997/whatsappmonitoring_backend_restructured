@@ -54,6 +54,7 @@ stages:
               kubernetesServiceConnection: 'unicx-aks-prod'
               namespace: '$(kubernetesNamespace)'
               manifests: 'k8s-v2/secretproviderclass.yaml'
+              arguments: '--validate=false'
 
           - task: KubernetesManifest@1
             displayName: 'Apply PodDisruptionBudget'
@@ -63,6 +64,7 @@ stages:
               kubernetesServiceConnection: 'unicx-aks-prod'
               namespace: '$(kubernetesNamespace)'
               manifests: 'k8s-v2/pdb.yaml'
+              arguments: '--validate=false'
 
           - task: KubernetesManifest@1
             displayName: 'Deploy API and Worker'
@@ -75,6 +77,7 @@ stages:
                 k8s-v2/deployment-api.yaml
                 k8s-v2/deployment-worker.yaml
               containers: '$(acrLoginServer)/$(imageName):$(tag)'
+              arguments: '--validate=false'
 
           - task: KubernetesManifest@1
             displayName: 'Apply Service'
@@ -84,3 +87,4 @@ stages:
               kubernetesServiceConnection: 'unicx-aks-prod'
               namespace: '$(kubernetesNamespace)'
               manifests: 'k8s-v2/service.yaml'
+              arguments: '--validate=false'
