@@ -14,11 +14,11 @@ async function setupTestApp() {
         imports: [
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
-                envFilePath: '.env.test',
+                envFilePath: ".env.test",
             }),
             mongoose_1.MongooseModule.forRootAsync({
                 useFactory: () => ({
-                    uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/unicx-test',
+                    uri: process.env.MONGODB_URI || "mongodb://localhost:27017/unicx-test",
                 }),
             }),
         ],
@@ -44,7 +44,7 @@ async function cleanDatabase() {
     }
 }
 beforeAll(async () => {
-    const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/unicx-test';
+    const mongoUri = process.env.MONGODB_URI || "mongodb://localhost:27017/unicx-test";
     mongoConnection = await mongoose.connect(mongoUri);
 });
 afterAll(async () => {

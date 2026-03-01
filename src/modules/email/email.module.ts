@@ -3,8 +3,8 @@ import { ConfigModule } from "@nestjs/config";
 import { EmailService } from "./email.service";
 import { EmailController } from "./email.controller";
 import { EmailQueueService } from "./email-queue.service";
-import { EmailQueueProcessor } from "./email-queue.processor";
-import { MessagingModule } from "../../common/messaging/messaging.module";
+import { EmailQueueProcessor } from "@/apps/worker/processors/email-queue/email-queue.processor";
+import { MessagingModule } from "@/common/messaging/messaging.module";
 
 @Module({
   imports: [ConfigModule, MessagingModule],

@@ -1,4 +1,4 @@
-import { WhatsAppQueueProcessor } from "@/modules/whatsapp-queue/whatsapp-queue.processor";
+import { WhatsAppQueueProcessor } from "@/apps/worker/processors/whatsapp-queue/whatsapp-queue.processor";
 import { WhatsAppQueueService } from "@/modules/whatsapp-queue/whatsapp-queue.service";
 import { forwardRef, Module } from "@nestjs/common";
 import { WhatsAppModule } from "@/modules/whatsapp/whatsapp.module";

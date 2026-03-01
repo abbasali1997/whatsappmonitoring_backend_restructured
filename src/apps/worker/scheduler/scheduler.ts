@@ -3,16 +3,20 @@ import { Queue, Worker, Job } from "bullmq";
 import IORedis from "ioredis";
 
 @Injectable()
-export class JobQueueWorker implements OnModuleDestroy {
-  private readonly logger = new Logger(JobQueueWorker.name);
+export class Scheduler implements OnModuleDestroy {
+  private readonly logger = new Logger(Scheduler.name);
   private connection: IORedis;
   private queues: Map<string, Queue> = new Map();
   private workers: Map<string, Worker> = new Map();
 
   constructor() {
+    const cs = process.env.REDIS_CONNECTION_STRING || "";
+    const url = new URL(cs.startsWith("redis") ? cs : `redis://${cs}`);
     this.connection = new IORedis({
-      host: process.env.REDIS_HOST || "localhost",
-      port: parseInt(process.env.REDIS_PORT) || 6379,
+      host: url.hostname,
+      port: parseInt(url.port) || 6379,
+      password: url.password || undefined,
+      tls: url.protocol === "rediss:" ? {} : undefined,
       maxRetriesPerRequest: null,
     });
   }

@@ -83,6 +83,7 @@
     "swagger-ui-express": "^5.0.0",
     "uuid": "^9.0.1",
     "whatsapp-web.js": "^1.34.6",
+    "tsconfig-paths": "^4.2.0",
     "wwebjs-mongo": "^1.1.0"
   },
   "devDependencies": {
@@ -112,7 +113,6 @@
     "ts-jest": "^29.1.0",
     "ts-loader": "^9.4.3",
     "ts-node": "^10.9.1",
-    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.1.3"
   },
   "jest": {

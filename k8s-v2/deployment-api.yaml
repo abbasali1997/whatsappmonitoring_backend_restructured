@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unicx-backend-v2
+  namespace: default
+spec:
+  replicas: 1
+  # Recreate: kills the old pod completely before starting a new one.
+  # Prevents two-pod overlap that causes WhatsApp session ownership contention.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: unicx-backend-v2
+  template:
+    metadata:
+      labels:
+        app: unicx-backend-v2
+    spec:
+      # Allow enough time for NestJS graceful shutdown + Chromium process cleanup.
+      terminationGracePeriodSeconds: 90
+      containers:
+      - name: backend-v2
+        image: unicxprod.azurecr.io/backend-v2:latest
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - secretRef:
+            name: unicx-backend-v2-secrets
+        volumeMounts:
+        - name: kv-secrets
+          mountPath: /mnt/secrets-store
+          readOnly: true
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        # Disable WhatsApp health check during initial rollout; re-enable once sessions are stable.
+        - name: WHATSAPP_HEALTHCHECK_ENABLED
+          value: "false"
+        - name: WHATSAPP_SESSION_LOCK_TTL_MS
+          value: "600000"
+        - name: WHATSAPP_SESSION_LOCK_REFRESH_INTERVAL_MS
+          value: "60000"
+        - name: WHATSAPP_REMOTE_AUTH_BACKUP_SYNC_INTERVAL_MS
+          value: "60000"
+        - name: WHATSAPP_QR_IDLE_CLOSE_DELAY_MS
+          value: "120000"
+        - name: WHATSAPP_LOGOUT_TIMEOUT_MS
+          value: "15000"
+        resources:
+          requests:
+            memory: "1536Mi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "sleep 20"]
+        startupProbe:
+          httpGet:
+            path: /api/v1/health/live
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          failureThreshold: 60
+        livenessProbe:
+          httpGet:
+            path: /api/v1/health/live
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 15
+          failureThreshold: 3
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /api/v1/health/live
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          failureThreshold: 3
+          timeoutSeconds: 3
+      volumes:
+      - name: kv-secrets
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: unicx-backend-v2-kv

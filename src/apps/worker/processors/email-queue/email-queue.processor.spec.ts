@@ -1,8 +1,8 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { EmailQueueProcessor } from "./email-queue.processor";
-import { QueueService } from "../../common/messaging/queue.service";
-import { EmailService } from "./email.service";
-import { EmailType } from "./email-queue.service";
+import { QueueService } from "@/common/messaging/queue.service";
+import { EmailService } from "@/modules/email/email.service";
+import { EmailType } from "@/modules/email/email-queue.service";
 import { ServiceBusReceivedMessage } from "@azure/service-bus";
 import { ConfigService } from "@nestjs/config";
 

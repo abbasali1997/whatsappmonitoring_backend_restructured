@@ -6,13 +6,13 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { WhatsAppHealthService } from "@/modules/whatsapp/whatsapp-health.service";
-import { JobQueueWorker } from "@/job-queue/job-queue.worker";
+import { Scheduler } from "@/apps/worker/scheduler/scheduler";
 import { WhatsAppService } from "@/modules/whatsapp/whatsapp.service";
 // import { WhatsAppService } from "@/modules/whatsapp/whatsapp.service";
 
 @Injectable()
-export class WhatsappWorker implements OnModuleInit, OnModuleDestroy {
-  private readonly logger = new Logger(WhatsappWorker.name);
+export class WhatsappScheduler implements OnModuleInit, OnModuleDestroy {
+  private readonly logger = new Logger(WhatsappScheduler.name);
   private readonly FAILURE_THRESHOLD: number;
   private readonly ENABLED: boolean;
 
@@ -22,7 +22,7 @@ export class WhatsappWorker implements OnModuleInit, OnModuleDestroy {
   constructor(
     private readonly whatsappService: WhatsAppService,
     private readonly whatsappHealthService: WhatsAppHealthService,
-    private readonly jobQueueService: JobQueueWorker,
+    private readonly scheduler: Scheduler,
     private readonly configService: ConfigService,
   ) {
     this.ENABLED =
@@ -64,9 +64,9 @@ export class WhatsappWorker implements OnModuleInit, OnModuleDestroy {
       await this.whatsappHealthService.runHealthChecks();
     };
 
-    this.jobQueueService.registerWorker(this.HEALTH_QUEUE, processFn);
+    this.scheduler.registerWorker(this.HEALTH_QUEUE, processFn);
 
-    await this.jobQueueService.registerCronJob(
+    await this.scheduler.registerCronJob(
       this.HEALTH_QUEUE,
       "run-health-check",
       cronExpression,
@@ -100,9 +100,9 @@ export class WhatsappWorker implements OnModuleInit, OnModuleDestroy {
       }
     };
 
-    this.jobQueueService.registerWorker(this.RECONNECT_QUEUE, processFn);
+    this.scheduler.registerWorker(this.RECONNECT_QUEUE, processFn);
 
-    await this.jobQueueService.registerCronJob(
+    await this.scheduler.registerCronJob(
       this.RECONNECT_QUEUE,
       "run-reconnect-sweep",
       cronExpression,
@@ -117,7 +117,7 @@ export class WhatsappWorker implements OnModuleInit, OnModuleDestroy {
   async onModuleDestroy() {
     if (!this.ENABLED) return;
     try {
-      await this.jobQueueService.destroyWorker();
+      await this.scheduler.destroyWorker();
       this.logger.log("[HealthCheckTick] Scheduler stopped");
     } catch {
       // ignore

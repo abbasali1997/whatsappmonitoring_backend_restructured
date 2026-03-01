@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unicx-worker-v2
+  namespace: default
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: unicx-worker-v2
+  template:
+    metadata:
+      labels:
+        app: unicx-worker-v2
+    spec:
+      # BullMQ + Service Bus receivers need extra time to drain in-flight messages.
+      terminationGracePeriodSeconds: 120
+      containers:
+      - name: worker-v2
+        image: unicxprod.azurecr.io/backend-v2:latest
+        # Override the default Dockerfile CMD to run the worker entrypoint.
+        command: ["node", "-r", "tsconfig-paths/register", "dist/worker/apps/worker/main.js"]
+        # No ports: the worker has no HTTP server.
+        envFrom:
+        - secretRef:
+            name: unicx-backend-v2-secrets
+        volumeMounts:
+        - name: kv-secrets
+          mountPath: /mnt/secrets-store
+          readOnly: true
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "sleep 20"]
+        # No HTTP probes; use a lightweight exec check to confirm the process is alive.
+        livenessProbe:
+          exec:
+            command: ["node", "-e", "process.exit(0)"]
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          failureThreshold: 3
+      volumes:
+      - name: kv-secrets
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: unicx-backend-v2-kv

@@ -3,13 +3,18 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 
 import { WhatsAppModule } from "@/modules/whatsapp/whatsapp.module";
 import { DatabaseModule } from "@/common/database/database.module";
-import { WhatsappWorker } from "@/job-queue/whatsapp/whatsapp.worker";
-import { JobQueueWorker } from "@/job-queue/job-queue.worker";
+import { WhatsappScheduler } from "@/apps/worker/scheduler/whatsapp/whatsapp.scheduler";
+import { Scheduler } from "@/apps/worker/scheduler/scheduler";
 import { MongooseModule } from "@nestjs/mongoose";
 import { configuration } from "@/config/configuration";
 import { validationSchema } from "@/config/validation";
 import { ScheduleModule } from "@nestjs/schedule";
 import { CacheModule } from "@/common/cache/cache.module";
+import { MessagingModule } from "@/common/messaging/messaging.module";
+import { EmailModule } from "@/modules/email/email.module";
+import { WhatsAppQueueModule } from "@/modules/whatsapp-queue/whatsapp-queue.module";
+import { EmailQueueProcessor } from "@/apps/worker/processors/email-queue/email-queue.processor";
+import { WhatsAppQueueProcessor } from "@/apps/worker/processors/whatsapp-queue/whatsapp-queue.processor";
 
 @Module({
   imports: [
@@ -38,7 +43,15 @@ import { CacheModule } from "@/common/cache/cache.module";
     DatabaseModule,
     WhatsAppModule,
     CacheModule,
+    MessagingModule,
+    EmailModule,
+    WhatsAppQueueModule,
   ],
-  providers: [WhatsappWorker, JobQueueWorker],
+  providers: [
+    WhatsappScheduler,
+    Scheduler,
+    EmailQueueProcessor,
+    WhatsAppQueueProcessor,
+  ],
 })
 export class WorkerModule {}

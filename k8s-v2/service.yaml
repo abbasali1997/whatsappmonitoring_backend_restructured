@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: unicx-backend-v2-service
+  namespace: default
+spec:
+  # LoadBalancer so you can test directly via the raw IP before touching App Gateway.
+  type: LoadBalancer
+  selector:
+    app: unicx-backend-v2
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 3000

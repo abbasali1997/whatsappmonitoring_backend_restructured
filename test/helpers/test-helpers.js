@@ -8,10 +8,10 @@ class TestDataFactory {
     static createMockUser(overrides = {}) {
         return {
             _id: new mongoose_1.Types.ObjectId(),
-            email: 'test@example.com',
-            firstName: 'Test',
-            lastName: 'User',
-            password: 'hashedPassword123',
+            email: "test@example.com",
+            firstName: "Test",
+            lastName: "User",
+            password: "hashedPassword123",
             role: user_schema_1.UserRole.USER,
             entityId: new mongoose_1.Types.ObjectId(),
             tenantId: new mongoose_1.Types.ObjectId(),
@@ -25,7 +25,7 @@ class TestDataFactory {
     static createMockEntity(overrides = {}) {
         return {
             _id: new mongoose_1.Types.ObjectId(),
-            name: 'Test Entity',
+            name: "Test Entity",
             type: entity_schema_1.EntityType.COMPANY,
             parentId: null,
             tenantId: new mongoose_1.Types.ObjectId(),
@@ -38,7 +38,7 @@ class TestDataFactory {
     static createMockJwtPayload(overrides = {}) {
         return {
             sub: new mongoose_1.Types.ObjectId().toString(),
-            email: 'test@example.com',
+            email: "test@example.com",
             role: user_schema_1.UserRole.USER,
             entityId: new mongoose_1.Types.ObjectId().toString(),
             tenantId: new mongoose_1.Types.ObjectId().toString(),
@@ -86,7 +86,7 @@ class AuthHelpers {
         const basePayload = TestDataFactory.createMockJwtPayload(payload);
         return `test-token-${JSON.stringify(basePayload)}`;
     }
-    static createAuthHeaders(token = 'test-token') {
+    static createAuthHeaders(token = "test-token") {
         return {
             authorization: `Bearer ${token}`,
         };
@@ -99,9 +99,9 @@ class QueueHelpers {
             body,
             messageId: `test-msg-${Date.now()}`,
             correlationId: properties.correlationId || `test-correlation-${Date.now()}`,
-            contentType: 'application/json',
+            contentType: "application/json",
             applicationProperties: {
-                type: properties.type || 'TEST',
+                type: properties.type || "TEST",
                 ...properties,
             },
             enqueuedTimeUtc: new Date(),

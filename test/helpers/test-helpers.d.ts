@@ -1,5 +1,5 @@
-import { User } from '../../src/common/schemas/user.schema';
-import { Entity } from '../../src/common/schemas/entity.schema';
+import { User } from "../../src/common/schemas/user.schema";
+import { Entity } from "../../src/common/schemas/entity.schema";
 export declare class TestDataFactory {
     static createMockUser(overrides?: Partial<User>): Partial<User>;
     static createMockEntity(overrides?: Partial<Entity>): Partial<Entity>;

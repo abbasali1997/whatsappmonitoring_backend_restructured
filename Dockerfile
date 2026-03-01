@@ -74,10 +74,8 @@ COPY --from=builder /app/templates ./templates
 EXPOSE 3000
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=40s \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/api/v1/health/live || exit 1
 
-# Run app (secrets injected by Kubernetes)
-# If CLEAN_DATABASE=1, run the seed script once during deployment/startup.
-CMD ["sh", "-c", "if [ \"$CLEAN_DATABASE\" = \"1\" ]; then node scripts/seed-database.js --clean; fi && if [ -f ./dist/src/main.js ]; then node dist/src/main.js; elif [ -f ./dist/main.js ]; then node dist/main.js; else echo 'ERROR: Entrypoint not found' >&2; exit 1; fi"]
-# W
+# Run the API (worker uses a separate command: override in the k8s Deployment)
+CMD ["node", "-r", "tsconfig-paths/register", "dist/api/apps/api/main.js"]
