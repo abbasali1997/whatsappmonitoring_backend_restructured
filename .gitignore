@@ -88,6 +88,9 @@ pnpm-lock.yaml
 .sentryclirc
 secrets.json
 
+!scripts/register-api-paths.js
+!scripts/register-worker-paths.js
+
 /scripts/activate-whatsapp-sessions.js
 /scripts/delete-whatsapp-sessions.js
 /scripts/fetch-users.js

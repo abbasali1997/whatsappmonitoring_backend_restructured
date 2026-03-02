@@ -21,7 +21,7 @@ spec:
       - name: worker-v2
         image: unicxprod.azurecr.io/backend-v2:latest
         # Override the default Dockerfile CMD to run the worker entrypoint.
-        command: ["node", "-r", "tsconfig-paths/register", "dist/worker/apps/worker/main.js"]
+        command: ["node", "-r", "scripts/register-worker-paths.js", "dist/worker/apps/worker/main.js"]
         # No ports: the worker has no HTTP server.
         envFrom:
         - secretRef:
