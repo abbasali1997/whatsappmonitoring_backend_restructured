@@ -30,6 +30,7 @@ import { MessagingModule } from "@/common/messaging/messaging.module";
 import { TelemetryInterceptor } from "@/common/interceptors/telemetry.interceptor";
 import { RetentionCleanupModule } from "@/common/cleanup/retention-cleanup.module";
 import { WhatsAppQueueModule } from "@/modules/whatsapp-queue/whatsapp-queue.module";
+import { WhatsAppHealthModule } from "@/modules/whatsapp-health/whatsapp-health.module";
 
 @Module({
   imports: [
@@ -97,8 +98,10 @@ import { WhatsAppQueueModule } from "@/modules/whatsapp-queue/whatsapp-queue.mod
     EntityTypesModule,
     UsersModule,
     EmailModule,
+    // Whatsapp
     WhatsAppModule,
     WhatsAppQueueModule,
+    WhatsAppHealthModule,
     DashboardModule,
     StorageModule,
   ],

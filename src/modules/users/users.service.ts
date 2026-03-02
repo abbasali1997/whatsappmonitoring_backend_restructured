@@ -14,19 +14,19 @@ import {
   RegistrationStatus,
   UserRole,
   WhatsAppConnectionStatus,
-} from "../../common/schemas/user.schema";
+} from "@/common/schemas/user.schema";
 import {
   SessionStatus,
   WhatsAppSession,
-} from "../../common/schemas/whatsapp-session.schema";
-import { Entity } from "../../common/schemas/entity.schema";
-import { Message } from "../../common/schemas/message.schema";
+} from "@/common/schemas/whatsapp-session.schema";
+import { Entity } from "@/common/schemas/entity.schema";
+import { Message } from "@/common/schemas/message.schema";
 import { AuthService } from "../auth/auth.service";
 import { EmailService } from "../email/email.service";
 import { EmailQueueService } from "../email/email-queue.service";
 import { WhatsAppService } from "../whatsapp/whatsapp.service";
-import { WhatsAppHealthService } from "../whatsapp/whatsapp-health.service";
-import { MessagingService } from "../../common/messaging/messaging.service";
+import { WhatsAppHealthService } from "../whatsapp-health/whatsapp-health.service";
+import { MessagingService } from "@/common/messaging/messaging.service";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { InviteUserDto } from "./dto/invite-user.dto";
 import {

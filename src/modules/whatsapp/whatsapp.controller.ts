@@ -20,7 +20,7 @@ import {
   ApiConsumes,
 } from "@nestjs/swagger";
 import { WhatsAppService } from "./whatsapp.service";
-import { WhatsAppHealthService } from "./whatsapp-health.service";
+import { WhatsAppHealthService } from "../whatsapp-health/whatsapp-health.service";
 import { StorageService } from "../storage/storage.service";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { RolesGuard } from "../auth/roles.guard";

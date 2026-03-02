@@ -3,8 +3,8 @@ import { Queue, Worker, Job } from "bullmq";
 import IORedis from "ioredis";
 
 @Injectable()
-export class JobQueueWorker implements OnModuleDestroy {
-  private readonly logger = new Logger(JobQueueWorker.name);
+export class Scheduler implements OnModuleDestroy {
+  private readonly logger = new Logger(Scheduler.name);
   private connection: IORedis;
   private queues: Map<string, Queue> = new Map();
   private workers: Map<string, Worker> = new Map();

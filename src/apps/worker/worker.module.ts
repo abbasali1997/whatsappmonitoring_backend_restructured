@@ -3,8 +3,8 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 
 import { WhatsAppModule } from "@/modules/whatsapp/whatsapp.module";
 import { DatabaseModule } from "@/common/database/database.module";
-import { WhatsappWorker } from "@/job-queue/whatsapp/whatsapp.worker";
-import { JobQueueWorker } from "@/job-queue/job-queue.worker";
+import { WhatsappScheduler } from "@/apps/worker/scheduler/whatsapp/whatsapp.scheduler";
+import { Scheduler } from "@/apps/worker/scheduler/scheduler";
 import { MongooseModule } from "@nestjs/mongoose";
 import { configuration } from "@/config/configuration";
 import { validationSchema } from "@/config/validation";
@@ -39,6 +39,6 @@ import { CacheModule } from "@/common/cache/cache.module";
     WhatsAppModule,
     CacheModule,
   ],
-  providers: [WhatsappWorker, JobQueueWorker],
+  providers: [WhatsappScheduler, Scheduler],
 })
 export class WorkerModule {}

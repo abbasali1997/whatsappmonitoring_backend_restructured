@@ -1,8 +1,8 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { WhatsAppQueueProcessor } from "./whatsapp-queue.processor";
 import { QueueService } from "@/common/messaging/queue.service";
-import { WhatsAppService } from "../whatsapp/whatsapp.service";
-import { WhatsAppQueueEvent } from "./whatsapp-queue.service";
+import { WhatsAppService } from "@/modules/whatsapp/whatsapp.service";
+import { WhatsAppQueueEvent } from "@/modules/whatsapp-queue/whatsapp-queue.service";
 import { ServiceBusReceivedMessage } from "@azure/service-bus";
 import { ConfigService } from "@nestjs/config";
 

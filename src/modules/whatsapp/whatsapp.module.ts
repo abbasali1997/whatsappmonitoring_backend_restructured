@@ -14,8 +14,8 @@ import { EntitiesModule } from "../entities/entities.module";
 import { StorageModule } from "../storage/storage.module";
 import { EmailModule } from "../email/email.module";
 import { QrGateway } from "./qr.gateway";
-import { WhatsAppHealthService } from "./whatsapp-health.service";
 import { WhatsAppQueueModule } from "@/modules/whatsapp-queue/whatsapp-queue.module";
+import { WhatsAppHealthModule } from "@/modules/whatsapp-health/whatsapp-health.module";
 
 @Module({
   imports: [
@@ -27,11 +27,12 @@ import { WhatsAppQueueModule } from "@/modules/whatsapp-queue/whatsapp-queue.mod
     forwardRef(() => UsersModule),
     forwardRef(() => EntitiesModule),
     forwardRef(() => WhatsAppQueueModule),
+    forwardRef(() => WhatsAppHealthModule),
     StorageModule,
     EmailModule,
   ],
   controllers: [WhatsAppController, PublicWhatsAppController],
-  providers: [WhatsAppService, QrGateway, WhatsAppHealthService],
-  exports: [WhatsAppService, WhatsAppHealthService],
+  providers: [WhatsAppService, QrGateway],
+  exports: [WhatsAppService],
 })
 export class WhatsAppModule {}

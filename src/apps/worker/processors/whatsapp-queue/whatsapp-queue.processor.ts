@@ -6,11 +6,11 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { QueueMessage, QueueService } from "@/common/messaging/queue.service";
-import { WhatsAppService } from "../whatsapp/whatsapp.service";
+import { WhatsAppService } from "@/modules/whatsapp/whatsapp.service";
 import {
   WHATSAPP_QUEUE_NAME,
   WhatsAppQueueEvent,
-} from "./whatsapp-queue.service";
+} from "@/modules/whatsapp-queue/whatsapp-queue.service";
 
 @Injectable()
 export class WhatsAppQueueProcessor implements OnModuleInit, OnModuleDestroy {

@@ -15,11 +15,8 @@ import {
   OnModuleDestroy,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import {
-  QueueService,
-  QueueMessage,
-} from "../../common/messaging/queue.service";
-import { EmailService } from "./email.service";
+import { QueueService, QueueMessage } from "@/common/messaging/queue.service";
+import { EmailService } from "@/modules/email/email.service";
 import {
   EmailType,
   InvitationEmailData,
@@ -27,7 +24,7 @@ import {
   PasswordResetEmailData,
   EmailVerificationData,
   TestEmailData,
-} from "./email-queue.service";
+} from "@/modules/email/email-queue.service";
 import { ServiceBusReceivedMessage } from "@azure/service-bus";
 
 @Injectable()
