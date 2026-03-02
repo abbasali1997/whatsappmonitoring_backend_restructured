@@ -10,15 +10,51 @@ export class Scheduler implements OnModuleDestroy {
   private workers: Map<string, Worker> = new Map();
 
   constructor() {
-    const cs = process.env.REDIS_CONNECTION_STRING || "";
-    const url = new URL(cs.startsWith("redis") ? cs : `redis://${cs}`);
-    this.connection = new IORedis({
-      host: url.hostname,
-      port: parseInt(url.port) || 6379,
-      password: url.password || undefined,
-      tls: url.protocol === "rediss:" ? {} : undefined,
+    this.connection = new IORedis(Scheduler.buildRedisOptions());
+  }
+
+  /**
+   * Parses REDIS_CONNECTION_STRING which may be either:
+   *   - Standard URL:  redis://:password@host:port  or  rediss://...
+   *   - Azure format:  host:6380,password=...,ssl=True,abortConnect=False
+   */
+  private static buildRedisOptions(): {
+    host: string;
+    port: number;
+    password?: string;
+    tls?: object;
+    maxRetriesPerRequest: null;
+  } {
+    const cs = (process.env.REDIS_CONNECTION_STRING || "").trim();
+
+    if (cs.startsWith("redis://") || cs.startsWith("rediss://")) {
+      const url = new URL(cs);
+      return {
+        host: url.hostname,
+        port: parseInt(url.port) || 6379,
+        password: url.password || undefined,
+        tls: cs.startsWith("rediss://") ? {} : undefined,
+        maxRetriesPerRequest: null,
+      };
+    }
+
+    // Azure Redis connection string: "host:port,password=PWD,ssl=True,..."
+    const segments = cs.split(",");
+    const [host, rawPort] = (segments[0] || "localhost:6379").split(":");
+    const port = parseInt(rawPort) || 6379;
+    const passwordSeg = segments.find((s) => s.trim().startsWith("password="));
+    const password = passwordSeg
+      ? passwordSeg.trim().slice("password=".length)
+      : undefined;
+    const useTls = segments.some((s) => /ssl\s*=\s*true/i.test(s));
+
+    return {
+      host,
+      port,
+      password,
+      tls: useTls ? {} : undefined,
       maxRetriesPerRequest: null,
-    });
+    };
   }
 
   /**
