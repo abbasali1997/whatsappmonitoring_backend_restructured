@@ -66,9 +66,12 @@ spec:
           httpGet:
             path: /api/v1/health/live
             port: 3000
-          initialDelaySeconds: 5
+          # NestJS + Puppeteer cold start takes ~60-90s; give 40s before first check
+          # then allow 60 more periods of 5s = 340s total budget before giving up
+          initialDelaySeconds: 40
           periodSeconds: 5
           failureThreshold: 60
+          timeoutSeconds: 5
         livenessProbe:
           httpGet:
             path: /api/v1/health/live
@@ -81,7 +84,7 @@ spec:
           httpGet:
             path: /api/v1/health/live
             port: 3000
-          initialDelaySeconds: 5
+          initialDelaySeconds: 40
           periodSeconds: 5
           failureThreshold: 3
           timeoutSeconds: 3
