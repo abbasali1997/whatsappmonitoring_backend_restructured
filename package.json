@@ -7,11 +7,11 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "tsc -p tsconfig.api.json && tsc -p tsconfig.worker.json",
-    "start": "node -r scripts/register-api-paths.js dist/api/apps/api/main.js",
+    "start": "node -r ./scripts/register-api-paths.js dist/api/apps/api/main.js",
     "start:dev": "nest start --watch --entryFile apps/api/main -r tsconfig-paths/register",
     "start:debug": "nest start --debug --watch --entryFile apps/api/main -r tsconfig-paths/register",
     "start:prod": "node dist/main",
-    "start:worker": "node -r scripts/register-worker-paths.js dist/worker/apps/worker/main.js",
+    "start:worker": "node -r ./scripts/register-worker-paths.js dist/worker/apps/worker/main.js",
     "start:worker:dev": "nest start --watch --entryFile apps/worker/main -r tsconfig-paths/register",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
