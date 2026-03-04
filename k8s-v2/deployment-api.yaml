@@ -51,12 +51,35 @@ spec:
           value: "120000"
         - name: WHATSAPP_LOGOUT_TIMEOUT_MS
           value: "15000"
+        # SESSION HIBERNATION — destroys Chromium for READY sessions idle longer
+        # than this threshold (ms). DB status stays READY so sessions auto-reconnect
+        # when fresh message activity resumes. This bounds memory to O(concurrent
+        # active sessions) instead of O(all sessions), enabling 100s of clients.
+        # Default: 30 minutes (1800000 ms)
+        - name: WHATSAPP_READY_HIBERNATE_TIMEOUT_MS
+          value: "1800000"
+        # Periodic reconnect sweep (runs every 2 min): only wake READY sessions
+        # with activity in this window. Must match WHATSAPP_READY_HIBERNATE_TIMEOUT_MS
+        # so the sweep doesn't immediately undo deliberate hibernation.
+        # Default: 30 minutes (1800000 ms)
+        - name: WHATSAPP_RECONNECT_MAX_IDLE_MS
+          value: "1800000"
+        # Startup reconnect window: wider than the periodic sweep so sessions
+        # that were live before a pod restart (crash/deploy) are restored even if
+        # inactive for several hours. Default: 24 hours (86400000 ms)
+        - name: WHATSAPP_STARTUP_RECONNECT_MAX_IDLE_MS
+          value: "86400000"
+        # NODE_OPTIONS caps Node.js heap at 3 GB, forcing GC before the container
+        # OOM limit is reached. Without this, the heap grows silently until Linux
+        # kills the process (Exit Code 137 / OOMKilled).
+        - name: NODE_OPTIONS
+          value: "--max-old-space-size=3072"
         resources:
           requests:
-            memory: "1536Mi"
+            memory: "2Gi"
             cpu: "500m"
           limits:
-            memory: "2Gi"
+            memory: "4Gi"
             cpu: "1000m"
         lifecycle:
           preStop:
