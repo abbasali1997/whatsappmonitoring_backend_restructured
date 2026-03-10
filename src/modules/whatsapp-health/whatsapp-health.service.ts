@@ -12,11 +12,11 @@ import {
   WhatsAppSession,
   WhatsAppSessionDocument,
   SessionStatus,
-} from "../../common/schemas/whatsapp-session.schema";
-import { WhatsAppService } from "./whatsapp.service";
+} from "@/common/schemas/whatsapp-session.schema";
+import { WhatsAppService } from "../whatsapp/whatsapp.service";
 import { EmailService } from "../email/email.service";
 import { InjectModel } from "@nestjs/mongoose";
-import { User, UserDocument } from "../../common/schemas/user.schema";
+import { User, UserDocument } from "@/common/schemas/user.schema";
 import {
   recordWhatsAppAlertEvent,
   recordWhatsAppHealthCheck,

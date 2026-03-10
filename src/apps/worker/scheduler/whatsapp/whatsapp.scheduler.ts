@@ -5,7 +5,7 @@ import {
   OnModuleInit,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { WhatsAppHealthService } from "@/modules/whatsapp/whatsapp-health.service";
+import { WhatsAppHealthService } from "@/modules/whatsapp-health/whatsapp-health.service";
 import { Scheduler } from "@/apps/worker/scheduler/scheduler";
 import { WhatsAppService } from "@/modules/whatsapp/whatsapp.service";
 // import { WhatsAppService } from "@/modules/whatsapp/whatsapp.service";

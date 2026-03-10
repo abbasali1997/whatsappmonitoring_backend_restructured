@@ -1,14 +1,15 @@
 import { Module, forwardRef } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { DatabaseModule } from "../../common/database/database.module";
+import { DatabaseModule } from "@/common/database/database.module";
 import { AuthModule } from "../auth/auth.module";
 import { EmailModule } from "../email/email.module";
 import { WhatsAppModule } from "../whatsapp/whatsapp.module";
-import { MessagingModule } from "../../common/messaging/messaging.module";
-import { Message, MessageSchema } from "../../common/schemas/message.schema";
+import { MessagingModule } from "@/common/messaging/messaging.module";
+import { Message, MessageSchema } from "@/common/schemas/message.schema";
 import { UsersService } from "./users.service";
 import { UsersController } from "./users.controller";
 import { BulkUploadGateway } from "./bulk-upload.gateway";
+import { WhatsAppHealthModule } from "@/modules/whatsapp-health/whatsapp-health.module";
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { BulkUploadGateway } from "./bulk-upload.gateway";
     EmailModule,
     MessagingModule,
     forwardRef(() => WhatsAppModule),
+    forwardRef(() => WhatsAppHealthModule),
   ],
   controllers: [UsersController],
   providers: [UsersService, BulkUploadGateway],

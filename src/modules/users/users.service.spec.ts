@@ -15,7 +15,7 @@ import { AuthService } from "../auth/auth.service";
 import { EmailService } from "../email/email.service";
 import { EmailQueueService } from "../email/email-queue.service";
 import { WhatsAppService } from "../whatsapp/whatsapp.service";
-import { WhatsAppHealthService } from "../whatsapp/whatsapp-health.service";
+import { WhatsAppHealthService } from "../whatsapp-health/whatsapp-health.service";
 import { MessagingService } from "../../common/messaging/messaging.service";
 import { BulkUploadGateway } from "./bulk-upload.gateway";
 import { WhatsAppSession } from "../../common/schemas/whatsapp-session.schema";

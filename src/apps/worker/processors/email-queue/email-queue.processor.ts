@@ -15,10 +15,7 @@ import {
   OnModuleDestroy,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import {
-  QueueService,
-  QueueMessage,
-} from "@/common/messaging/queue.service";
+import { QueueService, QueueMessage } from "@/common/messaging/queue.service";
 import { EmailService } from "@/modules/email/email.service";
 import {
   EmailType,

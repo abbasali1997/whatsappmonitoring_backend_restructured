@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { WhatsAppHealthService } from "./whatsapp-health.service";
-import { WhatsAppService } from "./whatsapp.service";
+import { WhatsAppService } from "../whatsapp/whatsapp.service";
 import { getModelToken } from "@nestjs/mongoose";
 import { ConfigService } from "@nestjs/config";
 import { SchedulerRegistry } from "@nestjs/schedule";

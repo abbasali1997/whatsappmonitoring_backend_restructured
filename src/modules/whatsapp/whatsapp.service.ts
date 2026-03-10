@@ -1222,11 +1222,11 @@ export class WhatsAppService implements OnModuleInit, OnModuleDestroy {
           }
         }
 
-        if (!chromePath) {
-          throw new Error(
-            "Chrome not found. Please install Chrome or set CHROME_PATH environment variable.",
-          );
-        }
+        // if (!chromePath) {
+        //   throw new Error(
+        //     "Chrome not found. Please install Chrome or set CHROME_PATH environment variable.",
+        //   );
+        // }
 
         const dataPath =
           process.env.WWEBJS_AUTH_PATH || `${process.cwd()}/.wwebjs_auth`;
