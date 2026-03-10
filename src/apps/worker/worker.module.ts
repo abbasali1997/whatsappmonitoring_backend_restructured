@@ -10,11 +10,6 @@ import { configuration } from "@/config/configuration";
 import { validationSchema } from "@/config/validation";
 import { ScheduleModule } from "@nestjs/schedule";
 import { CacheModule } from "@/common/cache/cache.module";
-import { MessagingModule } from "@/common/messaging/messaging.module";
-import { EmailModule } from "@/modules/email/email.module";
-import { WhatsAppQueueModule } from "@/modules/whatsapp-queue/whatsapp-queue.module";
-import { EmailQueueProcessor } from "@/apps/worker/processors/email-queue/email-queue.processor";
-import { WhatsAppQueueProcessor } from "@/apps/worker/processors/whatsapp-queue/whatsapp-queue.processor";
 
 @Module({
   imports: [
@@ -43,15 +38,7 @@ import { WhatsAppQueueProcessor } from "@/apps/worker/processors/whatsapp-queue/
     DatabaseModule,
     WhatsAppModule,
     CacheModule,
-    MessagingModule,
-    EmailModule,
-    WhatsAppQueueModule,
   ],
-  providers: [
-    WhatsappScheduler,
-    Scheduler,
-    EmailQueueProcessor,
-    WhatsAppQueueProcessor,
-  ],
+  providers: [WhatsappScheduler, Scheduler],
 })
 export class WorkerModule {}

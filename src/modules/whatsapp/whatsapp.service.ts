@@ -756,10 +756,8 @@ export class WhatsAppService implements OnModuleInit, OnModuleDestroy {
 
   async onModuleInit() {
     this.logger.log("WhatsApp Service initialized");
-    // Reconnect active sessions on startup (isStartup=true uses a 24-hour
-    // activity window so sessions that were live before a pod restart are
-    // restored even if they haven't sent a message in the last 30 minutes).
-    await this.reconnectActiveSessions(true);
+    // Reconnect active sessions on startup
+    await this.reconnectActiveSessions();
 
     // Start periodic cleanup of idle (non-connected) clients to save memory
     this.startIdleClientCleanup();
@@ -822,50 +820,29 @@ export class WhatsAppService implements OnModuleInit, OnModuleDestroy {
     const now = Date.now();
     const idleSince = new Date(now - this.idleSessionTimeoutMs);
 
-    // How long a READY/AUTHENTICATED session must be idle before its Chromium
-    // process is destroyed (hibernation). The DB status stays READY so the
-    // reconnect sweep re-activates it when fresh message activity resumes.
-    // This bounds memory to O(concurrently active sessions), not O(all sessions),
-    // making the system scale to hundreds of clients without proportional memory growth.
-    const readyHibernateMs =
-      Number(process.env.WHATSAPP_READY_HIBERNATE_TIMEOUT_MS) || 30 * 60 * 1000;
-    const readyIdleSince = new Date(now - readyHibernateMs);
-
     // Only consider sessions for which this pod currently has a client instance
     const activeSessionIds = Array.from(this.clients.keys());
     if (!activeSessionIds.length) {
       return;
     }
 
-    // 1. Non-connected sessions idle past the standard threshold (existing logic).
-    const nonReadyIdleSessions = await this.sessionModel.find({
+    const idleSessions = await this.sessionModel.find({
       sessionId: { $in: activeSessionIds },
-      status: { $nin: [SessionStatus.READY, SessionStatus.AUTHENTICATED] },
+      // Do NOT close connected sessions, and skip those in initializing
+      status: {
+        $nin: [SessionStatus.READY, SessionStatus.AUTHENTICATED],
+      },
       $or: [
         { lastActivityAt: { $lt: idleSince } },
         { lastActivityAt: { $exists: false } },
       ],
     });
 
-    // 2. READY/AUTHENTICATED sessions idle past the hibernation threshold.
-    //    Chromium is destroyed but DB status stays READY. The reconnect sweep
-    //    will re-initialize Chromium once lastActivityAt is refreshed by new
-    //    message activity or an explicit user action.
-    const readyIdleSessions = await this.sessionModel.find({
-      sessionId: { $in: activeSessionIds },
-      status: { $in: [SessionStatus.READY, SessionStatus.AUTHENTICATED] },
-      $or: [
-        { lastActivityAt: { $lt: readyIdleSince } },
-        { lastActivityAt: { $exists: false } },
-      ],
-    });
-
-    const sessionsToProcess = [...nonReadyIdleSessions, ...readyIdleSessions];
-    if (!sessionsToProcess.length) {
+    if (!idleSessions.length) {
       return;
     }
 
-    for (const session of sessionsToProcess) {
+    for (const session of idleSessions) {
       if (this.initializingSessions.has(session.sessionId)) {
         this.logger.debug(
           `[SERVICE] Skipping idle cleanup for ${session.sessionId}; initialization in progress`,
@@ -879,21 +856,13 @@ export class WhatsAppService implements OnModuleInit, OnModuleDestroy {
         continue;
       }
       const sessionId = session.sessionId;
-      const isHibernating = [
-        SessionStatus.READY,
-        SessionStatus.AUTHENTICATED,
-      ].includes(session.status);
-
       this.logger.log(
-        isHibernating
-          ? `[SERVICE] Hibernating idle READY session ${sessionId} (lastActivityAt=${session.lastActivityAt}); destroying Chromium, DB status preserved as ${session.status}`
-          : `[SERVICE] Closing idle WhatsApp client for session ${sessionId} (status=${session.status}, lastActivityAt=${session.lastActivityAt})`,
+        `[SERVICE] Closing idle WhatsApp client for session ${sessionId} (status=${session.status}, lastActivityAt=${session.lastActivityAt})`,
       );
 
       try {
-        // preserveStatus=true: destroys Chromium without changing DB status.
-        // For READY sessions this is hibernation — the session reconnects
-        // automatically once new activity updates lastActivityAt.
+        // Close browser and free resources, but keep current status so that
+        // higher-level logic can decide whether/when to reconnect.
         await this.disconnectSession(sessionId, { preserveStatus: true });
       } catch (error) {
         this.logger.warn(
@@ -3443,45 +3412,18 @@ export class WhatsAppService implements OnModuleInit, OnModuleDestroy {
     this.qrGateway.emitStatus(sessionId, { status, message });
   }
 
-  async reconnectActiveSessions(isStartup = false): Promise<void> {
-    this.logger.debug(
-      `[SERVICE] Starting reconnect of active sessions (isStartup=${isStartup})`,
-    );
-
-    // On pod startup use a wide window (default 24 h) so all sessions that
-    // were live before a crash/deploy are restored.  For the periodic scheduler
-    // sweep (every 2 min) use a narrow window matching the hibernate threshold
-    // so the sweep does NOT immediately undo deliberate hibernation.
-    const reconnectMaxIdleMs = isStartup
-      ? Number(process.env.WHATSAPP_STARTUP_RECONNECT_MAX_IDLE_MS) ||
-        24 * 60 * 60 * 1000
-      : Number(process.env.WHATSAPP_RECONNECT_MAX_IDLE_MS) ||
-        30 * 60 * 1000;
-    const reconnectCutoff = new Date(Date.now() - reconnectMaxIdleMs);
-
+  async reconnectActiveSessions(): Promise<void> {
+    this.logger.debug(`[SERVICE] Starting reconnect of active sessions`);
     const activeSessions = await this.sessionModel.find({
       // IMPORTANT: do NOT depend on WhatsAppSession.isActive for reconnection.
       // Production data contains READY sessions with isActive=false, which would otherwise
       // prevent RemoteAuth reconnection on pod restart.
       $or: [
-        {
-          status: { $in: [SessionStatus.READY, SessionStatus.AUTHENTICATED] },
-          // Only wake sessions with recent activity. Sessions idle longer than
-          // reconnectMaxIdleMs are intentionally hibernated by cleanupIdleClients
-          // and will reconnect automatically once lastActivityAt is refreshed by
-          // new message activity or an explicit user action.
-          $or: [
-            { lastActivityAt: { $gte: reconnectCutoff } },
-            // Reconnect legacy sessions that pre-date the lastActivityAt field.
-            { lastActivityAt: { $exists: false } },
-          ],
-        },
+        { status: { $in: [SessionStatus.READY, SessionStatus.AUTHENTICATED] } },
         { status: SessionStatus.CONNECTING },
         {
           // Previously connected sessions that got marked DISCONNECTED during restarts.
           // Some legacy docs may have missing connectedAt, but will still have whatsappId/phoneNumber.
-          // Always try to reconnect DISCONNECTED sessions regardless of idle time —
-          // they are visibly broken to users and should self-heal.
           status: SessionStatus.DISCONNECTED,
           $or: [
             { connectedAt: { $exists: true, $ne: null } },
