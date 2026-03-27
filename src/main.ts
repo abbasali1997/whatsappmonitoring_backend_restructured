@@ -7,10 +7,10 @@ import helmet from "helmet";
 const compression = require("compression");
 import { AppModule } from "./app.module";
 // Initialize Azure Application Insights telemetry BEFORE creating the app
-import { initTelemetry } from "../../telemetry";
-import { ApplicationInsightsLogger } from "@/common/logger/application-insights.logger";
-import { correlationIdMiddleware } from "@/common/middleware/correlation-id.middleware";
-import { AllExceptionsFilter } from "@/common/filters/all-exceptions.filter";
+import { initTelemetry } from "./telemetry";
+import { ApplicationInsightsLogger } from "./common/logger/application-insights.logger";
+import { correlationIdMiddleware } from "./common/middleware/correlation-id.middleware";
+import { AllExceptionsFilter } from "./common/filters/all-exceptions.filter";
 
 function registerProcessGuards() {
   // Safety: avoid duplicate handlers in watch/hot-reload scenarios.

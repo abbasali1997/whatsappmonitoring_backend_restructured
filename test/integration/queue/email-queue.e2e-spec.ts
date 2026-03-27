@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { INestApplication } from "@nestjs/common";
-import { AppModule } from "@/apps/api/app.module";
+import { AppModule } from "../../../src/app.module";
 import { QueueHelpers } from "../../helpers/test-helpers";
 import { EmailQueueService } from "../../../src/modules/email/email-queue.service";
 import { cleanDatabase } from "../../setup-e2e";

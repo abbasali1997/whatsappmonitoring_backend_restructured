@@ -181,4 +181,10 @@ export const configuration = () => ({
     externalAuthProviders:
       process.env.ENABLE_EXTERNAL_AUTH_PROVIDERS === "true",
   },
+
+  whatsappManager: {
+    baseUrl: process.env.WHATSAPP_MANAGER_BASE_URL || "http://localhost:3002",
+    apiKey: process.env.WHATSAPP_MANAGER_API_KEY || "",
+    timeoutMs: Number(process.env.WHATSAPP_MANAGER_TIMEOUT_MS || 15000),
+  },
 });

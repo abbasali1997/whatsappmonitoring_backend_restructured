@@ -8,6 +8,8 @@
     "allowSyntheticDefaultImports": true,
     "target": "ES2020",
     "sourceMap": true,
+    "outDir": "./dist",
+    "rootDir": "./",
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { INestApplication } from "@nestjs/common";
-import { AppModule } from "@/apps/api/app.module";
+import { AppModule } from "../../../src/app.module";
 import { DatabaseHelpers, TestDataFactory } from "../../helpers/test-helpers";
 import { getModelToken } from "@nestjs/mongoose";
 import { User } from "../../../src/common/schemas/user.schema";

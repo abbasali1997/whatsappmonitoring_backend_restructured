@@ -16,6 +16,7 @@ import { EmailModule } from "../email/email.module";
 import { QrGateway } from "./qr.gateway";
 import { WhatsAppQueueModule } from "@/modules/whatsapp-queue/whatsapp-queue.module";
 import { WhatsAppHealthModule } from "@/modules/whatsapp-health/whatsapp-health.module";
+import { HttpModule } from "@nestjs/axios";
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { WhatsAppHealthModule } from "@/modules/whatsapp-health/whatsapp-health.
     forwardRef(() => WhatsAppHealthModule),
     StorageModule,
     EmailModule,
+    HttpModule,
   ],
   controllers: [WhatsAppController, PublicWhatsAppController],
   providers: [WhatsAppService, QrGateway],

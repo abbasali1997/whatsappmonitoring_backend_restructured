@@ -168,33 +168,6 @@ export class QrGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
-  emitQrUpdate(
-    sessionId: string,
-    payload: { qrCode: string; expiresAt: Date | null },
-  ) {
-    const normalizedId = this.normalizeSessionId(sessionId);
-    if (!normalizedId) {
-      return;
-    }
-    const room = this.getRoomName(normalizedId);
-    this.server?.to(room).emit("qr.update", {
-      sessionId: normalizedId,
-      ...payload,
-    });
-  }
-
-  emitStatus(sessionId: string, payload: { status: string; message?: string }) {
-    const normalizedId = this.normalizeSessionId(sessionId);
-    if (!normalizedId) {
-      return;
-    }
-    const room = this.getRoomName(normalizedId);
-    this.server?.to(room).emit("qr.status", {
-      sessionId: normalizedId,
-      ...payload,
-    });
-  }
-
   private async emitExistingSnapshot(client: Socket, sessionId: string) {
     try {
       const session = await this.sessionModel
